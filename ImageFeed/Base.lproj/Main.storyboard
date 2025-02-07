@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23094" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23084"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
-        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -47,30 +46,48 @@
                                                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                     <state key="normal" image="active_icon"/>
                                                 </button>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="6 февраля 2025" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aAM-Cj-g00">
-                                                    <rect key="frame" x="24" y="170" width="152" height="18"/>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ya4-eI-DLD" customClass="GradientView" customModule="ImageFeed" customModuleProvider="target">
+                                                    <rect key="frame" x="16" y="166" width="361" height="30"/>
+                                                    <subviews>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="6 февраля 2025" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aAM-Cj-g00">
+                                                            <rect key="frame" x="8" y="4" width="152" height="18"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="18" id="gpP-Ij-Anr"/>
+                                                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="152" id="rxx-JL-72r"/>
+                                                            </constraints>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                    </subviews>
                                                     <constraints>
-                                                        <constraint firstAttribute="height" constant="18" id="gpP-Ij-Anr"/>
-                                                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="152" id="rxx-JL-72r"/>
+                                                        <constraint firstAttribute="height" constant="30" id="AXf-yX-ace"/>
+                                                        <constraint firstItem="aAM-Cj-g00" firstAttribute="leading" secondItem="Ya4-eI-DLD" secondAttribute="leading" constant="8" id="F6k-oX-P58"/>
+                                                        <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="aAM-Cj-g00" secondAttribute="trailing" constant="20" symbolic="YES" id="Jq3-cm-5ws"/>
+                                                        <constraint firstAttribute="bottom" secondItem="aAM-Cj-g00" secondAttribute="bottom" constant="8" id="wiF-LV-2Y0"/>
                                                     </constraints>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                    <nil key="highlightedColor"/>
-                                                    <color key="shadowColor" systemColor="secondaryLabelColor"/>
-                                                </label>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="color" keyPath="startColor">
+                                                            <color key="value" red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="0.0" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="color" keyPath="endColor">
+                                                            <color key="value" red="0.1019607843" green="0.1058823529" blue="0.1333333333" alpha="1" colorSpace="calibratedRGB"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                    </userDefinedRuntimeAttributes>
+                                                </view>
                                             </subviews>
                                             <color key="backgroundColor" red="0.1019607843" green="0.1058823529" blue="0.1333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <constraints>
-                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="aAM-Cj-g00" secondAttribute="trailing" constant="20" symbolic="YES" id="50E-ku-jEU"/>
                                                 <constraint firstItem="dRi-HL-Ok6" firstAttribute="trailing" secondItem="Sln-xw-flZ" secondAttribute="trailing" id="6J6-Kf-yzM"/>
+                                                <constraint firstItem="Ya4-eI-DLD" firstAttribute="bottom" secondItem="Sln-xw-flZ" secondAttribute="bottom" id="7ns-eH-vQU"/>
                                                 <constraint firstAttribute="bottom" secondItem="Sln-xw-flZ" secondAttribute="bottom" constant="4" id="JTn-7v-xF0"/>
+                                                <constraint firstItem="Ya4-eI-DLD" firstAttribute="leading" secondItem="Sln-xw-flZ" secondAttribute="leading" id="Kdd-LS-KCx"/>
                                                 <constraint firstItem="Sln-xw-flZ" firstAttribute="top" secondItem="ev8-Bn-cqy" secondAttribute="top" constant="4" id="VOn-nk-L5s"/>
-                                                <constraint firstItem="aAM-Cj-g00" firstAttribute="leading" secondItem="Sln-xw-flZ" secondAttribute="leading" constant="8" id="WX5-tu-Cdx"/>
                                                 <constraint firstItem="dRi-HL-Ok6" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="ev8-Bn-cqy" secondAttribute="leading" constant="20" symbolic="YES" id="bMw-d5-OAy"/>
                                                 <constraint firstAttribute="trailing" secondItem="Sln-xw-flZ" secondAttribute="trailing" constant="16" id="efA-JI-3CG"/>
                                                 <constraint firstItem="Sln-xw-flZ" firstAttribute="leading" secondItem="ev8-Bn-cqy" secondAttribute="leading" constant="16" id="frY-7s-HEV"/>
                                                 <constraint firstItem="dRi-HL-Ok6" firstAttribute="top" secondItem="Sln-xw-flZ" secondAttribute="top" id="pN3-pz-Tin"/>
-                                                <constraint firstItem="aAM-Cj-g00" firstAttribute="bottom" secondItem="Sln-xw-flZ" secondAttribute="bottom" constant="-8" id="qvp-QW-6mx"/>
+                                                <constraint firstItem="Ya4-eI-DLD" firstAttribute="trailing" secondItem="Sln-xw-flZ" secondAttribute="trailing" id="vwJ-1D-J5u"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.1019607843" green="0.1058823529" blue="0.1333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -108,8 +125,5 @@
     <resources>
         <image name="0" width="533.33331298828125" height="353"/>
         <image name="active_icon" width="30" height="27.333333969116211"/>
-        <systemColor name="secondaryLabelColor">
-            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
     </resources>
 </document>
