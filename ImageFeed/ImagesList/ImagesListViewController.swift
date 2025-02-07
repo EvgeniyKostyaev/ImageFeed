@@ -18,6 +18,7 @@ final class ImagesListViewController: UIViewController {
     }
     
     private let photosName: [String] = Array(0..<20).map{ "\($0)" }
+    private let currentDate = Date()
     
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -34,9 +35,10 @@ extension ImagesListViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: ImagesListCell.reuseIdentifier, for: indexPath)
-
-        guard let imageListCell = cell as? ImagesListCell else {
+        guard let imageListCell = tableView.dequeueReusableCell(
+            withIdentifier: ImagesListCell.reuseIdentifier,
+            for: indexPath
+        ) as? ImagesListCell else {
             return UITableViewCell()
         }
 
@@ -47,7 +49,7 @@ extension ImagesListViewController: UITableViewDataSource {
 }
 
 extension ImagesListViewController {
-    func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
+    private func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
         
         guard let image = UIImage(named: photosName[indexPath.row]) else {
             return
@@ -55,18 +57,18 @@ extension ImagesListViewController {
         
         cell.photoImageView.image = image
         
-        cell.datetLabel.text = dateFormatter.string(from: Date())
+        cell.dateLabel.text = dateFormatter.string(from: currentDate)
         
-        if (indexPath.row % 2 == 0) {
-            cell.likeButton.setImage(UIImage(named: "active_icon"), for: UIControl.State.normal)
-        } else {
-            cell.likeButton.setImage(UIImage(named: "inactive_icon"), for: UIControl.State.normal)
-        }
+        let isLiked = indexPath.row % 2 == 0
+        let imageLike = isLiked ? UIImage(named: "active_icon") : UIImage(named: "inactive_icon")
+        cell.likeButton.setImage(imageLike, for: UIControl.State.normal)
     }
 }
 
 extension ImagesListViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {}
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // TODO: - Add logic when clicking on a cell
+    }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         guard let image = UIImage(named: photosName[indexPath.row]) else {
