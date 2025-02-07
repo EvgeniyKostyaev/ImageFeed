@@ -38,10 +38,10 @@
                                                     </userDefinedRuntimeAttributes>
                                                 </imageView>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dRi-HL-Ok6">
-                                                    <rect key="frame" x="333" y="4" width="44" height="44"/>
+                                                    <rect key="frame" x="335" y="4" width="42" height="42"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" constant="44" id="n3W-4i-B09"/>
-                                                        <constraint firstAttribute="height" constant="44" id="z1M-HL-w4g"/>
+                                                        <constraint firstAttribute="width" constant="42" id="n3W-4i-B09"/>
+                                                        <constraint firstAttribute="height" constant="42" id="z1M-HL-w4g"/>
                                                     </constraints>
                                                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                     <state key="normal" image="active_icon"/>
