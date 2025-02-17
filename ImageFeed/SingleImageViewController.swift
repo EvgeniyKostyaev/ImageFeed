@@ -18,10 +18,17 @@ final class SingleImageViewController: UIViewController {
     
     @IBOutlet private weak var imageView: UIImageView!
     
+    @IBOutlet private weak var backButton: UIButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         imageView.image = image
+    }
+    
+    // MARK: - Action methods
+    @IBAction private func didTapBackButton(_ sender: Any) {
+        dismiss(animated: true, completion: nil)
     }
     
 }
