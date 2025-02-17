@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="URX-Hz-XWD">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="q8o-JY-aUa">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -8,6 +8,24 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
+        <!--Tab Bar Controller-->
+        <scene sceneID="TW6-Kd-bgg">
+            <objects>
+                <tabBarController id="q8o-JY-aUa" sceneMemberID="viewController">
+                    <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="oD5-tY-pK1">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="49"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="viewControllers" id="wkk-BB-VN8"/>
+                        <segue destination="URX-Hz-XWD" kind="relationship" relationship="viewControllers" id="WDc-tU-txT"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="nf7-ca-gbx" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-839" y="-7"/>
+        </scene>
         <!--Images List View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
@@ -113,13 +131,14 @@
                             <constraint firstAttribute="bottom" secondItem="3Oz-GF-tDp" secondAttribute="bottom" id="Z44-mI-hwf"/>
                         </constraints>
                     </view>
+                    <tabBarItem key="tabBarItem" title="" image="tab_editorial_active" id="CCY-YH-0WV"/>
                     <connections>
                         <outlet property="tableView" destination="3Oz-GF-tDp" id="VFf-Mf-4vY"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="138.1679389312977" y="-2.1126760563380285"/>
+            <point key="canvasLocation" x="-15" y="-448"/>
         </scene>
         <!--Profile View Controller-->
         <scene sceneID="gLn-Oe-7lB">
@@ -181,6 +200,7 @@
                             <constraint firstItem="Qi4-yw-wXP" firstAttribute="trailing" secondItem="Se3-dG-L1K" secondAttribute="trailing" constant="-24" id="gCZ-uz-o7G"/>
                         </constraints>
                     </view>
+                    <tabBarItem key="tabBarItem" title="" image="tab_profile_active" id="ue1-PB-ijV"/>
                     <connections>
                         <outlet property="logoutButton" destination="Qi4-yw-wXP" id="GZn-5z-YlA"/>
                         <outlet property="nameLabel" destination="ft9-E4-v82" id="ccC-zX-qDp"/>
@@ -191,13 +211,15 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="g3z-If-vCA" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="802" y="-2"/>
+            <point key="canvasLocation" x="1" y="255"/>
         </scene>
     </scenes>
     <resources>
         <image name="0" width="533.33331298828125" height="353"/>
         <image name="active_icon" width="30" height="27.333333969116211"/>
         <image name="logout_icon" width="20" height="22"/>
+        <image name="tab_editorial_active" width="30.333333969116211" height="30"/>
+        <image name="tab_profile_active" width="30.333333969116211" height="30"/>
         <image name="user_photo_icon" width="70" height="70"/>
     </resources>
 </document>
