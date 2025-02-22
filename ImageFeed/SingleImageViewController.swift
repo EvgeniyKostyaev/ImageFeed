@@ -26,6 +26,10 @@ final class SingleImageViewController: UIViewController {
         super.viewDidLoad()
         
         imageView.image = image
+        imageView.frame.size = image?.size ?? CGSize(width: 0,height: 0)
+        
+        scrollView.minimumZoomScale = 0.1
+        scrollView.maximumZoomScale = 1.25
     }
     
     // MARK: - Action methods
@@ -33,4 +37,10 @@ final class SingleImageViewController: UIViewController {
         dismiss(animated: true, completion: nil)
     }
     
+}
+
+extension SingleImageViewController: UIScrollViewDelegate {
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return imageView
+    }
 }
