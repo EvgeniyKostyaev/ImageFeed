@@ -154,24 +154,17 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" minimumZoomScale="0.0" translatesAutoresizingMaskIntoConstraints="NO" id="N7m-h8-apx">
-                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="N7m-h8-apx">
+                                <rect key="frame" x="0.0" y="-20" width="393" height="892"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="0" translatesAutoresizingMaskIntoConstraints="NO" id="8dd-zZ-gIP">
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="0" translatesAutoresizingMaskIntoConstraints="NO" id="8dd-zZ-gIP">
                                         <rect key="frame" x="20" y="20" width="533.33333333333337" height="353"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </imageView>
                                 </subviews>
-                                <constraints>
-                                    <constraint firstItem="8dd-zZ-gIP" firstAttribute="leading" secondItem="N7m-h8-apx" secondAttribute="leading" constant="20" id="XQd-ac-Ibm"/>
-                                    <constraint firstItem="8dd-zZ-gIP" firstAttribute="trailing" secondItem="N7m-h8-apx" secondAttribute="trailing" constant="-20" id="ZWT-JG-2NC"/>
-                                    <constraint firstItem="8dd-zZ-gIP" firstAttribute="top" secondItem="N7m-h8-apx" secondAttribute="top" constant="20" id="fVN-05-6I4"/>
-                                    <constraint firstItem="8dd-zZ-gIP" firstAttribute="bottom" secondItem="N7m-h8-apx" secondAttribute="bottom" constant="-20" id="j5L-ar-wYl"/>
-                                </constraints>
                                 <viewLayoutGuide key="contentLayoutGuide" id="ikR-al-e4a"/>
                                 <viewLayoutGuide key="frameLayoutGuide" id="JrQ-L8-Trb"/>
-                                <connections>
-                                    <outlet property="delegate" destination="dAv-f2-6CG" id="vYr-QC-hkg"/>
-                                </connections>
                             </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eik-ig-hSq">
                                 <rect key="frame" x="9" y="55" width="24" height="24"/>
@@ -189,12 +182,8 @@
                         <viewLayoutGuide key="safeArea" id="ZaC-Pg-d1f"/>
                         <color key="backgroundColor" red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="N7m-h8-apx" firstAttribute="top" secondItem="ZaC-Pg-d1f" secondAttribute="top" id="9gZ-qd-ZH9"/>
                             <constraint firstItem="eik-ig-hSq" firstAttribute="leading" secondItem="HGo-g1-ymB" secondAttribute="leading" constant="9" id="I7e-Uv-JHR"/>
                             <constraint firstItem="eik-ig-hSq" firstAttribute="top" secondItem="HGo-g1-ymB" secondAttribute="top" constant="55" id="ZDl-BD-hw4"/>
-                            <constraint firstItem="N7m-h8-apx" firstAttribute="leading" secondItem="ZaC-Pg-d1f" secondAttribute="leading" id="or1-wq-525"/>
-                            <constraint firstItem="N7m-h8-apx" firstAttribute="trailing" secondItem="ZaC-Pg-d1f" secondAttribute="trailing" id="qB7-1E-Zrj"/>
-                            <constraint firstItem="N7m-h8-apx" firstAttribute="bottom" secondItem="ZaC-Pg-d1f" secondAttribute="bottom" id="tXo-dE-jNu"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="bgt-on-9kf"/>
