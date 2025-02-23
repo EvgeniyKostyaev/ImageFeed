@@ -23,6 +23,8 @@ final class SingleImageViewController: UIViewController {
     
     @IBOutlet private weak var backButton: UIButton!
     
+    @IBOutlet private weak var shareButton: UIButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -62,6 +64,14 @@ final class SingleImageViewController: UIViewController {
         dismiss(animated: true, completion: nil)
     }
     
+    @IBAction private func didTapShareButton(_ sender: Any) {
+        guard let image else { return }
+        let share = UIActivityViewController(
+            activityItems: [image],
+            applicationActivities: nil
+        )
+        present(share, animated: true, completion: nil)
+    }
 }
 
 extension SingleImageViewController: UIScrollViewDelegate {
