@@ -9,14 +9,7 @@ import UIKit
 
 final class SingleImageViewController: UIViewController {
     
-    var image: UIImage? {
-        didSet {
-            guard isViewLoaded else { return }
-            
-            setupImageAndScrollView()
-        }
-    }
-    
+    // MARK: - IB Outlets
     @IBOutlet private weak var scrollView: UIScrollView!
     
     @IBOutlet private weak var imageView: UIImageView!
@@ -25,6 +18,16 @@ final class SingleImageViewController: UIViewController {
     
     @IBOutlet private weak var shareButton: UIButton!
     
+    // MARK: - Public Properties
+    var image: UIImage? {
+        didSet {
+            guard isViewLoaded else { return }
+            
+            setupImageAndScrollView()
+        }
+    }
+    
+    // MARK: - Overrides Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -34,7 +37,21 @@ final class SingleImageViewController: UIViewController {
         setupImageAndScrollView()
     }
     
-    // MARK: - Helper methods
+    // MARK: - IB Actions
+    @IBAction private func didTapBackButton(_ sender: Any) {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    @IBAction private func didTapShareButton(_ sender: Any) {
+        guard let image else { return }
+        let share = UIActivityViewController(
+            activityItems: [image],
+            applicationActivities: nil
+        )
+        present(share, animated: true, completion: nil)
+    }
+    
+    // MARK: - Private Methods
     private func setupImageAndScrollView() {
         guard let image = image else { return }
         imageView.image = image
@@ -59,21 +76,9 @@ final class SingleImageViewController: UIViewController {
         scrollView.setContentOffset(CGPoint(x: x, y: y), animated: false)
     }
     
-    // MARK: - Action methods
-    @IBAction private func didTapBackButton(_ sender: Any) {
-        dismiss(animated: true, completion: nil)
-    }
-    
-    @IBAction private func didTapShareButton(_ sender: Any) {
-        guard let image else { return }
-        let share = UIActivityViewController(
-            activityItems: [image],
-            applicationActivities: nil
-        )
-        present(share, animated: true, completion: nil)
-    }
 }
 
+// MARK: - UIScrollViewDelegate methods
 extension SingleImageViewController: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return imageView
