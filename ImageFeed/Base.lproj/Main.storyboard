@@ -162,18 +162,6 @@
                                         <rect key="frame" x="8" y="28" width="533.33333333333337" height="353"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </imageView>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gHn-Tc-RP6">
-                                        <rect key="frame" x="171.66666666666666" y="752" width="50" height="50"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="50" id="LLF-IU-N83"/>
-                                            <constraint firstAttribute="width" constant="50" id="TuE-Pu-U0E"/>
-                                        </constraints>
-                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                        <state key="normal" image="share_icon"/>
-                                        <connections>
-                                            <action selector="didTapShareButton:" destination="dAv-f2-6CG" eventType="touchUpInside" id="YMv-pE-W5I"/>
-                                        </connections>
-                                    </button>
                                 </subviews>
                                 <viewLayoutGuide key="contentLayoutGuide" id="ikR-al-e4a"/>
                                 <viewLayoutGuide key="frameLayoutGuide" id="JrQ-L8-Trb"/>
@@ -181,6 +169,18 @@
                                     <outlet property="delegate" destination="dAv-f2-6CG" id="HEE-4I-O7v"/>
                                 </connections>
                             </scrollView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gHn-Tc-RP6">
+                                <rect key="frame" x="171.66666666666666" y="752" width="50" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="LLF-IU-N83"/>
+                                    <constraint firstAttribute="width" constant="50" id="TuE-Pu-U0E"/>
+                                </constraints>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" image="share_icon"/>
+                                <connections>
+                                    <action selector="didTapShareButton:" destination="dAv-f2-6CG" eventType="touchUpInside" id="YMv-pE-W5I"/>
+                                </connections>
+                            </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eik-ig-hSq">
                                 <rect key="frame" x="9" y="55" width="24" height="24"/>
                                 <constraints>
@@ -198,8 +198,8 @@
                         <color key="backgroundColor" red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="eik-ig-hSq" firstAttribute="leading" secondItem="HGo-g1-ymB" secondAttribute="leading" constant="9" id="I7e-Uv-JHR"/>
-                            <constraint firstItem="gHn-Tc-RP6" firstAttribute="centerX" secondItem="HGo-g1-ymB" secondAttribute="centerX" id="KZA-l7-p7y"/>
-                            <constraint firstItem="gHn-Tc-RP6" firstAttribute="bottom" secondItem="ZaC-Pg-d1f" secondAttribute="bottom" constant="-50" id="O8M-cj-bqq"/>
+                            <constraint firstItem="gHn-Tc-RP6" firstAttribute="centerX" secondItem="HGo-g1-ymB" secondAttribute="centerX" id="XnL-BQ-Cz5"/>
+                            <constraint firstAttribute="bottom" secondItem="gHn-Tc-RP6" secondAttribute="bottom" constant="50" id="ZBg-ka-7MI"/>
                             <constraint firstItem="eik-ig-hSq" firstAttribute="top" secondItem="HGo-g1-ymB" secondAttribute="top" constant="55" id="ZDl-BD-hw4"/>
                         </constraints>
                     </view>
