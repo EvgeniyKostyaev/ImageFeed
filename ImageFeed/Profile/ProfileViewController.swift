@@ -7,7 +7,7 @@
 
 import UIKit
 
-struct ProfileViewControllerTheme {
+enum ProfileViewControllerTheme {
     static let nameLabelFont: CGFloat = 23
     
     static let nicknameLabelFont: CGFloat = 13
