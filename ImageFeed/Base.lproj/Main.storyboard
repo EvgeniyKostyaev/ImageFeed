@@ -5,6 +5,7 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -264,7 +265,7 @@
                                     <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
                                 </userDefinedRuntimeAttributes>
                                 <connections>
-                                    <action selector="didTapLoginButton:" destination="ba3-Ov-dLr" eventType="touchUpInside" id="SfF-zU-eqE"/>
+                                    <segue destination="5t5-QL-Vvm" kind="show" identifier="ShowWebView" id="OrY-Xa-SeG"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -305,6 +306,22 @@
             </objects>
             <point key="canvasLocation" x="-866.41221374045801" y="-684.50704225352115"/>
         </scene>
+        <!--Web View View Controller-->
+        <scene sceneID="s3l-Ct-muG">
+            <objects>
+                <viewController id="5t5-QL-Vvm" customClass="WebViewViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="itz-8k-6Rh">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="8Mb-lz-mfj"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="lqg-Jv-fvt"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="kYQ-EW-5HM" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="905" y="-1176"/>
+        </scene>
     </scenes>
     <resources>
         <image name="0" width="533.33331298828125" height="353"/>
@@ -314,5 +331,8 @@
         <image name="share_icon" width="50.333332061767578" height="50"/>
         <image name="tab_editorial_active" width="30.333333969116211" height="30"/>
         <image name="tab_profile_active" width="30.333333969116211" height="30"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
     </resources>
 </document>

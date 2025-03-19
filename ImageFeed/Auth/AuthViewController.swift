@@ -9,11 +9,8 @@ import UIKit
 
 final class AuthViewController: UIViewController {
     
+    private let showWebViewSegueIdentifier = "ShowWebView"
+    
     // MARK: - IB Outlets
     @IBOutlet weak private var loginButton: UIButton!
-    
-    // MARK: - IB Actions
-    @IBAction private func didTapLoginButton(_ sender: Any) {
-        
-    }
 }
