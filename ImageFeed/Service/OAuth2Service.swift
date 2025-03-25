@@ -16,10 +16,30 @@ final class OAuth2Service {
     static let shared = OAuth2Service()
     private init() {}
     
-    private enum NetworkError: Error {
-        case codeError
+    // MARK: - Public Methods
+    func fetchOAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
+        guard let request = makeOAuthTokenRequest(code: code) else {
+            return
+        }
+        
+        let task = URLSession.shared.data(for: request) { result in
+            switch result {
+            case .success(let data):
+                do {
+                    let oAuthTokenResponseBody = try JSONDecoder().decode(OAuthTokenResponseBody.self, from: data)
+                    completion(.success(oAuthTokenResponseBody.accessToken))
+                } catch {
+                    completion(.failure(error))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+        
+        task.resume()
     }
     
+    // MARK: - Private Methods
     private func makeOAuthTokenRequest(code: String) -> URLRequest? {
         
         guard var urlComponents = URLComponents(string: OAuth2ServiceConstants.unsplashTokenURLString) else {
@@ -43,30 +63,5 @@ final class OAuth2Service {
         
         return request
      }
-    
-    private func fetchOAuthToken(code: String, handler: @escaping (Result<Data, Error>) -> Void) {
-        guard let request = makeOAuthTokenRequest(code: code) else {
-            return
-        }
-        
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            
-            if let error = error {
-                handler(.failure(error))
-                return
-            }
-            
-            if let response = response as? HTTPURLResponse,
-                response.statusCode < 200 || response.statusCode >= 300 {
-                handler(.failure(NetworkError.codeError))
-                return
-            }
-            
-            guard let data = data else { return }
-            handler(.success(data))
-        }
-        
-        task.resume()
-    }
 
 }
