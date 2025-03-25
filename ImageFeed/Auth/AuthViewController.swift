@@ -14,6 +14,7 @@ final class AuthViewController: UIViewController {
     
     // MARK: - Private Properties
     private let showWebViewSegueIdentifier = "ShowWebView"
+    private let oAuth2TokenStorage = OAuth2TokenStorage()
     
     // MARK: - Overrides Methods
     override func viewDidLoad() {
@@ -48,7 +49,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
         OAuth2Service.shared.fetchOAuthToken(code: code) { result in
             switch(result) {
-            case .success(let accessToken): print(accessToken)
+            case .success(let accessToken): self.oAuth2TokenStorage.token = accessToken
             case .failure(let error): print("Error: \(error)")
             }
         }
