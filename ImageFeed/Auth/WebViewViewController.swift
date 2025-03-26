@@ -100,8 +100,9 @@ final class WebViewViewController: UIViewController {
     }
 }
 
-// MARK: - WKNavigationDelegate methods
 extension WebViewViewController: WKNavigationDelegate {
+    
+    // MARK: - WKNavigationDelegate methods
     func webView(
         _ webView: WKWebView,
         decidePolicyFor navigationAction: WKNavigationAction,

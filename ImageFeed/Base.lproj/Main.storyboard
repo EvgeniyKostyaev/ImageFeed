@@ -12,7 +12,7 @@
         <!--Tab Bar Controller-->
         <scene sceneID="TW6-Kd-bgg">
             <objects>
-                <tabBarController id="q8o-JY-aUa" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="TabBarViewController" id="q8o-JY-aUa" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" id="DHW-TD-koz"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="oD5-tY-pK1">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="49"/>
@@ -314,7 +314,6 @@
                     </view>
                     <connections>
                         <segue destination="Uj7-cr-uc5" kind="presentation" identifier="ShowAuthenticationScreen" modalPresentationStyle="fullScreen" id="n4R-xJ-glZ"/>
-                        <segue destination="q8o-JY-aUa" kind="presentation" identifier="ShowImagesListScreen" modalPresentationStyle="fullScreen" id="aQF-gw-jyH"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vHA-BW-O7r" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
