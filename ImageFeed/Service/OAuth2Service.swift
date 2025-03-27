@@ -19,6 +19,8 @@ final class OAuth2Service {
     // MARK: - Public Methods
     func fetchOAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
         guard let request = makeOAuthTokenRequest(code: code) else {
+            print("Ошибка: не удалось создать токен запрос")
+            completion(.failure(NetworkError.urlSessionError))
             return
         }
         
@@ -29,9 +31,13 @@ final class OAuth2Service {
                     let oAuthTokenResponseBody = try JSONDecoder().decode(OAuthTokenResponseBody.self, from: data)
                     completion(.success(oAuthTokenResponseBody.accessToken))
                 } catch {
-                    completion(.failure(error))
+                    DispatchQueue.main.async {
+                        print("Ошибка декодирования: \(error)")
+                        completion(.failure(error))
+                    }
                 }
             case .failure(let error):
+                print("Ошибка сети: \(error)")
                 completion(.failure(error))
             }
         }
