@@ -51,16 +51,18 @@ final class AuthViewController: UIViewController {
     }
 }
 
+// MARK: - WebViewViewControllerDelegate methods
 extension AuthViewController: WebViewViewControllerDelegate {
     
-    // MARK: - WebViewViewControllerDelegate methods
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
         
         vc.dismiss(animated: true)
         
-        OAuth2Service.shared.fetchOAuthToken(code: code) { result in
+        OAuth2Service.shared.fetchOAuthToken(code: code) { [weak self] result in
             switch(result) {
             case .success(let accessToken):
+                
+                guard let self = self else { return }
                 
                 self.oAuth2TokenStorage.token = accessToken
                 
@@ -72,7 +74,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
     }
     
     func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
-//        vc.dismiss(animated: true)
+
     }
     
 }
