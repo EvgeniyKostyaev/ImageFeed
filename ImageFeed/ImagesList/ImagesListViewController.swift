@@ -9,15 +9,11 @@ import UIKit
 
 final class ImagesListViewController: UIViewController {
     
-    private let showSingleImageSegueIdentifier = "ShowSingleImage"
-    
+    // MARK: - IB Outlets
     @IBOutlet private var tableView: UITableView!
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
-    }
+    // MARK: - Private Properties
+    private let showSingleImageSegueIdentifier = "ShowSingleImage"
     
     private let photosName: [String] = Array(0..<20).map{ "\($0)" }
     private let currentDate = Date()
@@ -28,6 +24,13 @@ final class ImagesListViewController: UIViewController {
         formatter.timeStyle = .none
         return formatter
     }()
+    
+    // MARK: - Overrides Methods
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
+    }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == showSingleImageSegueIdentifier {
@@ -47,6 +50,7 @@ final class ImagesListViewController: UIViewController {
     }
 }
 
+// MARK: - UITableViewDataSource methods
 extension ImagesListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return photosName.count
@@ -66,23 +70,7 @@ extension ImagesListViewController: UITableViewDataSource {
     }
 }
 
-extension ImagesListViewController {
-    private func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
-        
-        guard let image = UIImage(named: photosName[indexPath.row]) else {
-            return
-        }
-        
-        cell.photoImageView.image = image
-        
-        cell.dateLabel.text = dateFormatter.string(from: currentDate)
-        
-        let isLiked = indexPath.row % 2 == 0
-        let imageLike = isLiked ? UIImage(named: "active_icon") : UIImage(named: "inactive_icon")
-        cell.likeButton.setImage(imageLike, for: UIControl.State.normal)
-    }
-}
-
+// MARK: - UITableViewDelegate methods
 extension ImagesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         performSegue(withIdentifier: showSingleImageSegueIdentifier, sender: indexPath)
@@ -100,6 +88,22 @@ extension ImagesListViewController: UITableViewDelegate {
         let cellHeight = image.size.height * scale + imageInsets.top + imageInsets.bottom
         return cellHeight
     }
-    
+}
+
+extension ImagesListViewController {
+    private func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
+        
+        guard let image = UIImage(named: photosName[indexPath.row]) else {
+            return
+        }
+        
+        cell.photoImageView.image = image
+        
+        cell.dateLabel.text = dateFormatter.string(from: currentDate)
+        
+        let isLiked = indexPath.row % 2 == 0
+        let imageLike = isLiked ? UIImage(named: "active_icon") : UIImage(named: "inactive_icon")
+        cell.likeButton.setImage(imageLike, for: UIControl.State.normal)
+    }
 }
 
