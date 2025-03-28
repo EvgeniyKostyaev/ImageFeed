@@ -28,7 +28,7 @@ final class OAuth2Service {
             switch result {
             case .success(let data):
                 do {
-                    let oAuthTokenResponseBody = try JSONDecoder().decode(OAuthTokenResponseBody.self, from: data)
+                    let oAuthTokenResponseBody = try SnakeCaseJSONDecoder().decode(OAuthTokenResponseBody.self, from: data)
                     completion(.success(oAuthTokenResponseBody.accessToken))
                 } catch {
                     DispatchQueue.main.async {
