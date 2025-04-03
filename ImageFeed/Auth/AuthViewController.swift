@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import ProgressHUD
 
 protocol AuthViewControllerDelegate: AnyObject {
     func didAuthenticate(_ vc: AuthViewController)
@@ -59,12 +58,12 @@ extension AuthViewController: WebViewViewControllerDelegate {
         
         vc.dismiss(animated: true)
         
-        ProgressHUD.animate()
+        UIBlockingProgressHUD.show()
         
         OAuth2Service.shared.fetchOAuthToken(code: code) { [weak self] result in
             switch(result) {
             case .success(let accessToken):
-                ProgressHUD.dismiss()
+                UIBlockingProgressHUD.dismiss()
                 
                 guard let self = self else { return }
                 
@@ -73,7 +72,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
                 self.delegate?.didAuthenticate(self)
             
             case .failure(let error):
-                ProgressHUD.dismiss()
+                UIBlockingProgressHUD.dismiss()
                 
                 print("Error: \(error)")
             }
