@@ -32,6 +32,7 @@ enum ProfileViewControllerTheme {
 
 final class ProfileViewController: UIViewController {
     
+    // MARK: - Private Properties
     private let userPhotoImageView: UIImageView = {
         return UIImageView(image: UIImage(named: "user_photo_icon"))
     }()
@@ -40,7 +41,7 @@ final class ProfileViewController: UIViewController {
         let nameLabel = UILabel()
         nameLabel.font = .systemFont(ofSize: ProfileViewControllerTheme.nameLabelFont, weight: .bold)
         nameLabel.textColor = .white
-        nameLabel.text = "Екатерина Новикова"
+        nameLabel.text = "Имя фамилия"
         
         return nameLabel
     }()
@@ -49,7 +50,7 @@ final class ProfileViewController: UIViewController {
         let nicknameLabel = UILabel()
         nicknameLabel.font = .systemFont(ofSize: ProfileViewControllerTheme.nicknameLabelFont, weight: .regular)
         nicknameLabel.textColor = ProfileViewControllerTheme.nicknameLabelTextColor
-        nicknameLabel.text = "@ekaterina_nov"
+        nicknameLabel.text = "@ник"
         
         return nicknameLabel
     }()
@@ -58,7 +59,7 @@ final class ProfileViewController: UIViewController {
         let statusLabel = UILabel()
         statusLabel.font = .systemFont(ofSize: ProfileViewControllerTheme.statusLabelFont, weight: .regular)
         statusLabel.textColor = .white
-        statusLabel.text = "Hello, world!"
+        statusLabel.text = "Статус"
         
         return statusLabel
     }()
@@ -74,15 +75,45 @@ final class ProfileViewController: UIViewController {
         return logoutButton
     }()
     
+    private let oAuth2TokenStorage = OAuth2TokenStorage()
+    
+    // MARK: - Overrides Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupViews()
         
         setupConstraints()
+        
+        if let token = oAuth2TokenStorage.token {
+            UIBlockingProgressHUD.show()
+            
+            ProfileService.shared.fetchProfile(token) { [weak self] result in
+                switch(result) {
+                case .success(let profile):
+                    UIBlockingProgressHUD.dismiss()
+                    
+                    guard let self = self else { return }
+                    
+                    self.nameLabel.text = profile.name
+                    self.nicknameLabel.text = profile.loginName
+                    self.statusLabel.text = profile.bio
+                
+                case .failure(let error):
+                    UIBlockingProgressHUD.dismiss()
+                    
+                    print("Error: \(error)")
+                }
+            }
+        }
     }
     
-    // MARK: - Helper methods
+    // MARK: - IB Actions
+    @objc private func didTapLogoutButton() {
+        // TODO: - Добавить логику при нажатии на кнопку
+    }
+    
+    // MARK: - Private Methods
     private func setupViews() {
         [userPhotoImageView,
          nameLabel,
@@ -120,8 +151,4 @@ final class ProfileViewController: UIViewController {
         ])
     }
     
-    // MARK: - Action methods
-    @objc private func didTapLogoutButton() {
-        // TODO: - Добавить логику при нажатии на кнопку
-    }
 }

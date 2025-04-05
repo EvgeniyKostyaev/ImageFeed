@@ -11,10 +11,6 @@ enum OAuth2ServiceConstants {
     static let unsplashTokenURLString = "https://unsplash.com/oauth/token"
 }
 
-enum AuthServiceError: Error {
-    case invalidRequest
-}
-
 final class OAuth2Service {
     
     static let shared = OAuth2Service()
@@ -29,7 +25,7 @@ final class OAuth2Service {
     func fetchOAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
         assert(Thread.isMainThread)
         guard lastCode != code else {
-            completion(.failure(AuthServiceError.invalidRequest))
+            completion(.failure(ServiceError.invalidRequest))
             return
         }
         
@@ -38,7 +34,7 @@ final class OAuth2Service {
         
         guard let request = makeOAuthTokenRequest(code: code) else {
             print("Ошибка: не удалось создать токен запрос")
-            completion(.failure(AuthServiceError.invalidRequest))
+            completion(.failure(ServiceError.invalidRequest))
             return
         }
         
