@@ -13,13 +13,17 @@ enum OAuth2ServiceConstants {
 
 final class OAuth2Service {
     
+    // MARK: - Public Properties
     static let shared = OAuth2Service()
-    private init() {}
     
+    // MARK: - Private Properties
     private let urlSession = URLSession.shared
        
     private var task: URLSessionTask?
     private var lastCode: String?
+    
+    // MARK: - Initializers
+    private init() {}
     
     // MARK: - Public Methods
     func fetchOAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {

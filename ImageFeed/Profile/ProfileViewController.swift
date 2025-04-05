@@ -75,7 +75,7 @@ final class ProfileViewController: UIViewController {
         return logoutButton
     }()
     
-    private let oAuth2TokenStorage = OAuth2TokenStorage()
+    private let profileService = ProfileService.shared
     
     // MARK: - Overrides Methods
     override func viewDidLoad() {
@@ -85,26 +85,8 @@ final class ProfileViewController: UIViewController {
         
         setupConstraints()
         
-        if let token = oAuth2TokenStorage.token {
-            UIBlockingProgressHUD.show()
-            
-            ProfileService.shared.fetchProfile(token) { [weak self] result in
-                switch(result) {
-                case .success(let profile):
-                    UIBlockingProgressHUD.dismiss()
-                    
-                    guard let self = self else { return }
-                    
-                    self.nameLabel.text = profile.name
-                    self.nicknameLabel.text = profile.loginName
-                    self.statusLabel.text = profile.bio
-                
-                case .failure(let error):
-                    UIBlockingProgressHUD.dismiss()
-                    
-                    print("Error: \(error)")
-                }
-            }
+        if let profile = profileService.profile {
+            updateProfileDetails(profile: profile)
         }
     }
     
@@ -149,6 +131,12 @@ final class ProfileViewController: UIViewController {
             logoutButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: ProfileViewControllerTheme.commonTrailingConstraint),
             logoutButton.centerYAnchor.constraint(equalTo: userPhotoImageView.centerYAnchor)
         ])
+    }
+    
+    private func updateProfileDetails(profile: Profile) {
+        nameLabel.text = profile.name
+        nicknameLabel.text = profile.loginName
+        statusLabel.text = profile.bio
     }
     
 }

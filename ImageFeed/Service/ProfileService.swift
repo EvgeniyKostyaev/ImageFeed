@@ -13,13 +13,19 @@ enum ProfileServiceConstants {
 
 final class ProfileService {
     
+    // MARK: - Public Properties
     static let shared = ProfileService()
-    private init() {}
     
+    // MARK: - Private Properties
     private let urlSession = URLSession.shared
        
     private var task: URLSessionTask?
     private var lastToken: String?
+    
+    private(set) var profile: Profile?
+    
+    // MARK: - Initializers
+    private init() {}
     
     // MARK: - Public Methods
     func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void) {
@@ -44,6 +50,7 @@ final class ProfileService {
                 do {
                     let profileResult = try SnakeCaseJSONDecoder().decode(ProfileResult.self, from: data)
                     if let profile = self?.convert(profileResult: profileResult) {
+                        self?.profile = profile
                         completion(.success(profile))
                     } else {
                         print("Ошибка конвертирования")
@@ -71,7 +78,7 @@ final class ProfileService {
     // MARK: - Private Methods
     private func makeProfileRequest(authToken: String) -> URLRequest? {
         
-        guard var urlComponents = URLComponents(string: ProfileServiceConstants.unsplashProfileURLString) else {
+        guard let urlComponents = URLComponents(string: ProfileServiceConstants.unsplashProfileURLString) else {
             return nil
         }
         
