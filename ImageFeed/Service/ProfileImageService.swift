@@ -8,7 +8,7 @@
 import Foundation
 
 enum ProfileImageServiceConstants {
-    static let unsplashProfileImageURLString = "https://api.unsplash.com/users/:username"
+    static let unsplashProfileImageURLString = "https://api.unsplash.com/users/"
 }
 
 final class ProfileImageService {
@@ -72,15 +72,8 @@ final class ProfileImageService {
     
     // MARK: - Private Methods
     private func makeProfileImageRequest(authToken: String, username: String) -> URLRequest? {
-        guard var urlComponents = URLComponents(string: ProfileImageServiceConstants.unsplashProfileImageURLString) else {
-            return nil
-        }
-        
-        urlComponents.queryItems = [
-            URLQueryItem(name: "username", value: username)
-        ]
-        
-        guard let url = urlComponents.url else {
+        let urlString = ProfileImageServiceConstants.unsplashProfileImageURLString + username
+        guard let url = URL(string: urlString) else {
             return nil
         }
         
