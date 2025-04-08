@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 enum ProfileViewControllerTheme {
     static let nameLabelFont: CGFloat = 23
@@ -114,7 +115,8 @@ final class ProfileViewController: UIViewController {
             let profileImageURL = ProfileImageService.shared.profileImageURL,
             let url = URL(string: profileImageURL)
         else { return }
-        // TODO [Sprint 11] Обновить аватар, используя Kingfisher
+        
+        userPhotoImageView.kf.setImage(with: url)
     }
     
     private func setupViews() {
