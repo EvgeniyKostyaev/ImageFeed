@@ -33,6 +33,7 @@ final class ProfileImageService {
     func fetchProfileImageURL(token: String, username: String, _ completion: @escaping (Result<String, Error>) -> Void) {
         assert(Thread.isMainThread)
         guard lastToken != token else {
+            print("[fetchProfileImageURL] Ошибка: гонка запросов")
             completion(.failure(ServiceError.invalidRequest))
             return
         }
@@ -41,32 +42,25 @@ final class ProfileImageService {
         lastToken = token
         
         guard let request = makeProfileImageRequest(authToken: token, username: username) else {
-            print("Ошибка: не удалось создать запрос для изображения профиля")
+            print("[fetchProfileImageURL] Ошибка: не удалось создать запрос для изображения профиля")
             completion(.failure(ServiceError.invalidRequest))
             return
         }
         
-        let task = urlSession.data(for: request) { [weak self] result in
+        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<UserResult, Error>) in
             switch result {
             case .success(let data):
-                do {
-                    let userResult = try SnakeCaseJSONDecoder().decode(UserResult.self, from: data)
-                    self?.profileImageURL = userResult.profileImage.small
-                    completion(.success(userResult.profileImage.small))
-                    
-                    NotificationCenter.default
-                        .post(
-                            name: ProfileImageService.didChangeNotification,
-                            object: self,
-                            userInfo: ["URL": self?.profileImageURL ?? String()])
-                } catch {
-                    DispatchQueue.main.async {
-                        print("Ошибка декодирования: \(error)")
-                        completion(.failure(error))
-                    }
-                }
+                let profileImageURL = data.profileImage.small
+                self?.profileImageURL = profileImageURL
+                completion(.success(profileImageURL))
+                
+                NotificationCenter.default
+                    .post(
+                        name: ProfileImageService.didChangeNotification,
+                        object: self,
+                        userInfo: ["URL": profileImageURL])
             case .failure(let error):
-                print("Ошибка сети: \(error)")
+                print("[fetchProfileImageURL] Ошибка сети: \(error.localizedDescription)")
                 completion(.failure(error))
             }
             

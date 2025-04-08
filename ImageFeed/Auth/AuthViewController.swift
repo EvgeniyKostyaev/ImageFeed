@@ -49,6 +49,24 @@ final class AuthViewController: UIViewController {
         navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
         navigationItem.backBarButtonItem?.tintColor = UIColor(named: "ypBlack")
     }
+    
+    private func handleNetworkError() {
+        let alert = UIAlertController(
+            title: "Что-то пошло не так",
+            message: "Не удалось войти в систему",
+            preferredStyle: .alert
+        )
+        
+        let okAction = UIAlertAction(
+            title: "Ок",
+            style: .default,
+            handler: nil
+        )
+        
+        alert.addAction(okAction)
+        
+        self.present(alert, animated: true, completion: nil)
+    }
 }
 
 // MARK: - WebViewViewControllerDelegate methods
@@ -61,20 +79,21 @@ extension AuthViewController: WebViewViewControllerDelegate {
         UIBlockingProgressHUD.show()
         
         OAuth2Service.shared.fetchOAuthToken(code: code) { [weak self] result in
+            
+            guard let self = self else { return }
+            
             switch(result) {
-            case .success(let accessToken):
+            case .success(let data):
                 UIBlockingProgressHUD.dismiss()
                 
-                guard let self = self else { return }
-                
-                self.oAuth2TokenStorage.token = accessToken
+                self.oAuth2TokenStorage.token = data.accessToken
                 
                 self.delegate?.didAuthenticate(self)
             
-            case .failure(let error):
+            case .failure(_):
                 UIBlockingProgressHUD.dismiss()
                 
-                print("Error: \(error)")
+                self.handleNetworkError()
             }
         }
     }

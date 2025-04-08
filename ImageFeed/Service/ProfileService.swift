@@ -31,6 +31,7 @@ final class ProfileService {
     func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void) {
         assert(Thread.isMainThread)
         guard lastToken != token else {
+            print("[fetchProfile] Ошибка: гонка запросов")
             completion(.failure(ServiceError.invalidRequest))
             return
         }
@@ -39,31 +40,23 @@ final class ProfileService {
         lastToken = token
         
         guard let request = makeProfileRequest(authToken: token) else {
-            print("Ошибка: не удалось создать профиль запрос")
+            print("[fetchProfile] Ошибка: не удалось создать профиль запрос")
             completion(.failure(ServiceError.invalidRequest))
             return
         }
         
-        let task = urlSession.data(for: request) { [weak self] result in
+        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<ProfileResult, Error>) in
             switch result {
             case .success(let data):
-                do {
-                    let profileResult = try SnakeCaseJSONDecoder().decode(ProfileResult.self, from: data)
-                    if let profile = self?.convert(profileResult: profileResult) {
-                        self?.profile = profile
-                        completion(.success(profile))
-                    } else {
-                        print("Ошибка конвертирования")
-                        completion(.failure(ServiceError.invalidRequest))
-                    }
-                } catch {
-                    DispatchQueue.main.async {
-                        print("Ошибка декодирования: \(error)")
-                        completion(.failure(error))
-                    }
+                if let profile = self?.convert(profileResult: data) {
+                    self?.profile = profile
+                    completion(.success(profile))
+                } else {
+                    print("[fetchProfile] Ошибка конвертирования")
+                    completion(.failure(ServiceError.invalidRequest))
                 }
             case .failure(let error):
-                print("Ошибка сети: \(error)")
+                print("[fetchProfile] Ошибка сети: \(error.localizedDescription)")
                 completion(.failure(error))
             }
             

@@ -26,9 +26,10 @@ final class OAuth2Service {
     private init() {}
     
     // MARK: - Public Methods
-    func fetchOAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
+    func fetchOAuthToken(code: String, completion: @escaping (Result<OAuthTokenResponseBody, Error>) -> Void) {
         assert(Thread.isMainThread)
         guard lastCode != code else {
+            print("[fetchOAuthToken] Ошибка: гонка запросов")
             completion(.failure(ServiceError.invalidRequest))
             return
         }
@@ -37,25 +38,17 @@ final class OAuth2Service {
         lastCode = code
         
         guard let request = makeOAuthTokenRequest(code: code) else {
-            print("Ошибка: не удалось создать токен запрос")
+            print("[fetchOAuthToken] Ошибка: не удалось создать токен запрос")
             completion(.failure(ServiceError.invalidRequest))
             return
         }
         
-        let task = urlSession.data(for: request) { [weak self] result in
+        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
             switch result {
             case .success(let data):
-                do {
-                    let oAuthTokenResponseBody = try SnakeCaseJSONDecoder().decode(OAuthTokenResponseBody.self, from: data)
-                    completion(.success(oAuthTokenResponseBody.accessToken))
-                } catch {
-                    DispatchQueue.main.async {
-                        print("Ошибка декодирования: \(error)")
-                        completion(.failure(error))
-                    }
-                }
+                completion(.success(data))
             case .failure(let error):
-                print("Ошибка сети: \(error)")
+                print("[fetchOAuthToken] Ошибка сети: \(error.localizedDescription)")
                 completion(.failure(error))
             }
             

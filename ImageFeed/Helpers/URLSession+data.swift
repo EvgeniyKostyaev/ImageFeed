@@ -14,7 +14,7 @@ enum NetworkError: Error {
 }
 
 extension URLSession {
-    func data(
+    private func data(
         for request: URLRequest,
         completion: @escaping (Result<Data, Error>) -> Void
     ) -> URLSessionTask {
@@ -38,6 +38,32 @@ extension URLSession {
             }
         })
         
+        return task
+    }
+}
+
+extension URLSession {
+    func objectTask<T: Decodable>(
+        for request: URLRequest,
+        completion: @escaping (Result<T, Error>) -> Void
+    ) -> URLSessionTask {
+        let task = data(for: request) { (result: Result<Data, Error>) in
+            switch result {
+            case .success(let data):
+                do {
+                    let responseBody = try SnakeCaseJSONDecoder().decode(T.self, from: data)
+                    completion(.success(responseBody))
+                } catch {
+                    DispatchQueue.main.async {
+                        print("[objectTask] Ошибка декодирования: \(error.localizedDescription), Данные: \(String(data: data, encoding: .utf8) ?? "")")
+                        completion(.failure(error))
+                    }
+                }
+            case .failure(let error):
+                print("[objectTask] Ошибка сети: \(error.localizedDescription)")
+                completion(.failure(error))
+            }
+        }
         return task
     }
 }
