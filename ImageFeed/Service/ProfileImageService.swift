@@ -16,13 +16,15 @@ final class ProfileImageService {
     // MARK: - Public Properties
     static let shared = ProfileImageService()
     
+    static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
+    
     // MARK: - Private Properties
     private let urlSession = URLSession.shared
        
     private var task: URLSessionTask?
     private var lastToken: String?
     
-    private(set) var avatarURL: String?
+    private(set) var profileImageURL: String?
     
     // MARK: - Initializers
     private init() {}
@@ -49,8 +51,14 @@ final class ProfileImageService {
             case .success(let data):
                 do {
                     let userResult = try SnakeCaseJSONDecoder().decode(UserResult.self, from: data)
-                    self?.avatarURL = userResult.profileImage.small
+                    self?.profileImageURL = userResult.profileImage.small
                     completion(.success(userResult.profileImage.small))
+                    
+                    NotificationCenter.default
+                        .post(
+                            name: ProfileImageService.didChangeNotification,
+                            object: self,
+                            userInfo: ["URL": self?.profileImageURL ?? String()])
                 } catch {
                     DispatchQueue.main.async {
                         print("Ошибка декодирования: \(error)")
