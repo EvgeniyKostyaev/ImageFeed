@@ -20,6 +20,7 @@ enum ProfileViewControllerTheme {
     
     static let userPhotoImageViewHeight: CGFloat = 70
     static let userPhotoImageViewWidth: CGFloat = 70
+    static let userPhotoImageCornerRadius: CGFloat = 70
     
     static let userPhotoImageViewTopConstraint: CGFloat = 32
     
@@ -34,15 +35,12 @@ enum ProfileViewControllerTheme {
 final class ProfileViewController: UIViewController {
     
     // MARK: - Private Properties
-    private let userPhotoImageView: UIImageView = {
-        return UIImageView(image: UIImage(named: "user_photo_icon"))
-    }()
+    private let userPhotoImageView = UIImageView()
     
     private let nameLabel: UILabel = {
         let nameLabel = UILabel()
         nameLabel.font = .systemFont(ofSize: ProfileViewControllerTheme.nameLabelFont, weight: .bold)
         nameLabel.textColor = .white
-        nameLabel.text = "Имя фамилия"
         
         return nameLabel
     }()
@@ -51,7 +49,6 @@ final class ProfileViewController: UIViewController {
         let nicknameLabel = UILabel()
         nicknameLabel.font = .systemFont(ofSize: ProfileViewControllerTheme.nicknameLabelFont, weight: .regular)
         nicknameLabel.textColor = ProfileViewControllerTheme.nicknameLabelTextColor
-        nicknameLabel.text = "@ник"
         
         return nicknameLabel
     }()
@@ -60,7 +57,6 @@ final class ProfileViewController: UIViewController {
         let statusLabel = UILabel()
         statusLabel.font = .systemFont(ofSize: ProfileViewControllerTheme.statusLabelFont, weight: .regular)
         statusLabel.textColor = .white
-        statusLabel.text = "Статус"
         
         return statusLabel
     }()
@@ -116,7 +112,12 @@ final class ProfileViewController: UIViewController {
             let url = URL(string: profileImageURL)
         else { return }
         
-        userPhotoImageView.kf.setImage(with: url)
+        userPhotoImageView.kf.indicatorType = .activity
+        
+        userPhotoImageView.kf.setImage(
+            with: url,
+            options: [.processor(RoundCornerImageProcessor(cornerRadius: ProfileViewControllerTheme.userPhotoImageCornerRadius))]
+        )
     }
     
     private func setupViews() {
