@@ -79,12 +79,11 @@ extension AuthViewController: WebViewViewControllerDelegate {
         UIBlockingProgressHUD.show()
         
         OAuth2Service.shared.fetchOAuthToken(code: code) { [weak self] result in
-            
-            guard let self = self else { return }
-            
             switch(result) {
             case .success(let data):
                 UIBlockingProgressHUD.dismiss()
+                
+                guard let self = self else { return }
                 
                 self.oAuth2TokenStorage.token = data.accessToken
                 
@@ -92,6 +91,8 @@ extension AuthViewController: WebViewViewControllerDelegate {
             
             case .failure(_):
                 UIBlockingProgressHUD.dismiss()
+                
+                guard let self = self else { return }
                 
                 self.handleNetworkError()
             }
