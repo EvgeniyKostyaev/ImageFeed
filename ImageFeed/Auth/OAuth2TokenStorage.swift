@@ -20,10 +20,11 @@ final class OAuth2TokenStorage {
         get {
             KeychainWrapper.standard.string(forKey: Keys.token.rawValue)
         }
-        
         set {
             if let newValue = newValue {
-                KeychainWrapper.standard.set(newValue, forKey: Keys.token.rawValue)
+                KeychainWrapper.standard.set(newValue, forKey: Keys.token.rawValue, withAccessibility: .whenUnlockedThisDeviceOnly)
+            } else {
+                KeychainWrapper.standard.removeObject(forKey: Keys.token.rawValue)
             }
         }
     }
