@@ -20,7 +20,7 @@ enum ProfileViewControllerTheme {
     
     static let userPhotoImageViewHeight: CGFloat = 70
     static let userPhotoImageViewWidth: CGFloat = 70
-    static let userPhotoImageCornerRadius: CGFloat = 70
+    static let userPhotoImageCornerRadius: CGFloat = userPhotoImageViewHeight / 2
     
     static let userPhotoImageViewTopConstraint: CGFloat = 32
     
@@ -35,7 +35,15 @@ enum ProfileViewControllerTheme {
 final class ProfileViewController: UIViewController {
     
     // MARK: - Private Properties
-    private let userPhotoImageView = UIImageView()
+    private let userPhotoImageView = {
+        let userPhotoImageView = UIImageView()
+        
+        userPhotoImageView.backgroundColor = UIColor(named: "ypBlack")
+        userPhotoImageView.layer.cornerRadius = ProfileViewControllerTheme.userPhotoImageCornerRadius
+        userPhotoImageView.layer.masksToBounds = true
+        
+        return userPhotoImageView
+    }()
     
     private let nameLabel: UILabel = {
         let nameLabel = UILabel()
@@ -114,10 +122,7 @@ final class ProfileViewController: UIViewController {
         
         userPhotoImageView.kf.indicatorType = .activity
         
-        userPhotoImageView.kf.setImage(
-            with: url,
-            options: [.processor(RoundCornerImageProcessor(cornerRadius: ProfileViewControllerTheme.userPhotoImageCornerRadius))]
-        )
+        userPhotoImageView.kf.setImage(with: url)
     }
     
     private func setupViews() {
