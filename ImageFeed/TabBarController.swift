@@ -23,6 +23,7 @@ final class TabBarController: UITabBarController {
             image: UIImage(named: "tab_profile_active"),
             selectedImage: nil
         )
+        profileViewController.view.backgroundColor = UIColor(named: "ypBlack")
         
         self.viewControllers = [imagesListViewController, profileViewController]
     }
