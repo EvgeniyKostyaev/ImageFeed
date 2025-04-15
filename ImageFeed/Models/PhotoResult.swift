@@ -9,11 +9,11 @@ import Foundation
 
 struct PhotoResult: Decodable {
     let id: String
-    let created_at: String
-    let width: Float
-    let height: Float
+    let createdAt: String
+    let width: Int
+    let height: Int
     let likes: Int
-    let liked_by_user: Bool
+    let likedByUser: Bool
     let description: String
     let urls: PhotoUrlsResult
 }
