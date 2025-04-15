@@ -162,7 +162,7 @@ final class ProfileViewController: UIViewController {
         ])
     }
     
-    private func updateProfileDetails(profile: Profile) {
+    private func updateProfileDetails(profile: ProfileModel) {
         nameLabel.text = profile.name
         nicknameLabel.text = profile.loginName
         statusLabel.text = profile.bio

@@ -22,13 +22,13 @@ final class ProfileService {
     private var task: URLSessionTask?
     private var lastToken: String?
     
-    private(set) var profile: Profile?
+    private(set) var profile: ProfileModel?
     
     // MARK: - Initializers
     private init() {}
     
     // MARK: - Public Methods
-    func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void) {
+    func fetchProfile(_ token: String, completion: @escaping (Result<ProfileModel, Error>) -> Void) {
         assert(Thread.isMainThread)
         guard lastToken != token else {
             print("[fetchProfile] Ошибка: гонка запросов")
@@ -86,8 +86,8 @@ final class ProfileService {
         return request
      }
     
-    private func convert(profileResult: ProfileResult) -> Profile {
-        let profile = Profile(
+    private func convert(profileResult: ProfileResult) -> ProfileModel {
+        let profile = ProfileModel(
             username: profileResult.username,
             name: "\(profileResult.firstName ?? String()) \(profileResult.lastName ?? String())",
             loginName: profileResult.firstName != nil ? "@\(profileResult.firstName ?? String())" : String(),
