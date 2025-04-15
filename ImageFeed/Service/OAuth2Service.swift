@@ -13,35 +13,50 @@ enum OAuth2ServiceConstants {
 
 final class OAuth2Service {
     
+    // MARK: - Public Properties
     static let shared = OAuth2Service()
+    
+    // MARK: - Private Properties
+    private let urlSession = URLSession.shared
+       
+    private var task: URLSessionTask?
+    private var lastCode: String?
+    
+    // MARK: - Initializers
     private init() {}
     
     // MARK: - Public Methods
-    func fetchOAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
-        guard let request = makeOAuthTokenRequest(code: code) else {
-            print("Ошибка: не удалось создать токен запрос")
-            completion(.failure(NetworkError.urlSessionError))
+    func fetchOAuthToken(code: String, completion: @escaping (Result<OAuthTokenResponseBody, Error>) -> Void) {
+        assert(Thread.isMainThread)
+        guard lastCode != code else {
+            print("[fetchOAuthToken] Ошибка: гонка запросов")
+            completion(.failure(ServiceError.invalidRequest))
             return
         }
         
-        let task = URLSession.shared.data(for: request) { result in
-            switch result {
-            case .success(let data):
-                do {
-                    let oAuthTokenResponseBody = try JSONDecoder().decode(OAuthTokenResponseBody.self, from: data)
-                    completion(.success(oAuthTokenResponseBody.accessToken))
-                } catch {
-                    DispatchQueue.main.async {
-                        print("Ошибка декодирования: \(error)")
-                        completion(.failure(error))
-                    }
-                }
-            case .failure(let error):
-                print("Ошибка сети: \(error)")
-                completion(.failure(error))
-            }
+        task?.cancel()
+        lastCode = code
+        
+        guard let request = makeOAuthTokenRequest(code: code) else {
+            print("[fetchOAuthToken] Ошибка: не удалось создать токен запрос")
+            completion(.failure(ServiceError.invalidRequest))
+            return
         }
         
+        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
+            switch result {
+            case .success(let data):
+                completion(.success(data))
+            case .failure(let error):
+                print("[fetchOAuthToken] Ошибка сети: \(error.localizedDescription)")
+                completion(.failure(error))
+            }
+            
+            self?.task = nil
+            self?.lastCode = nil
+        }
+        
+        self.task = task
         task.resume()
     }
     

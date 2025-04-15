@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 enum ProfileViewControllerTheme {
     static let nameLabelFont: CGFloat = 23
@@ -19,6 +20,7 @@ enum ProfileViewControllerTheme {
     
     static let userPhotoImageViewHeight: CGFloat = 70
     static let userPhotoImageViewWidth: CGFloat = 70
+    static let userPhotoImageCornerRadius: CGFloat = userPhotoImageViewHeight / 2
     
     static let userPhotoImageViewTopConstraint: CGFloat = 32
     
@@ -32,15 +34,21 @@ enum ProfileViewControllerTheme {
 
 final class ProfileViewController: UIViewController {
     
-    private let userPhotoImageView: UIImageView = {
-        return UIImageView(image: UIImage(named: "user_photo_icon"))
+    // MARK: - Private Properties
+    private let userPhotoImageView = {
+        let userPhotoImageView = UIImageView()
+        
+        userPhotoImageView.backgroundColor = UIColor(named: "ypBlack")
+        userPhotoImageView.layer.cornerRadius = ProfileViewControllerTheme.userPhotoImageCornerRadius
+        userPhotoImageView.layer.masksToBounds = true
+        
+        return userPhotoImageView
     }()
     
     private let nameLabel: UILabel = {
         let nameLabel = UILabel()
         nameLabel.font = .systemFont(ofSize: ProfileViewControllerTheme.nameLabelFont, weight: .bold)
         nameLabel.textColor = .white
-        nameLabel.text = "Екатерина Новикова"
         
         return nameLabel
     }()
@@ -49,7 +57,6 @@ final class ProfileViewController: UIViewController {
         let nicknameLabel = UILabel()
         nicknameLabel.font = .systemFont(ofSize: ProfileViewControllerTheme.nicknameLabelFont, weight: .regular)
         nicknameLabel.textColor = ProfileViewControllerTheme.nicknameLabelTextColor
-        nicknameLabel.text = "@ekaterina_nov"
         
         return nicknameLabel
     }()
@@ -58,7 +65,6 @@ final class ProfileViewController: UIViewController {
         let statusLabel = UILabel()
         statusLabel.font = .systemFont(ofSize: ProfileViewControllerTheme.statusLabelFont, weight: .regular)
         statusLabel.textColor = .white
-        statusLabel.text = "Hello, world!"
         
         return statusLabel
     }()
@@ -74,15 +80,51 @@ final class ProfileViewController: UIViewController {
         return logoutButton
     }()
     
+    private let profileService = ProfileService.shared
+    
+    private var profileImageServiceObserver: NSObjectProtocol?
+    
+    // MARK: - Overrides Methods
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        profileImageServiceObserver = NotificationCenter.default
+            .addObserver(
+                forName: ProfileImageService.didChangeNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                guard let self = self else { return }
+                self.updateAvatar()
+            }
+        updateAvatar()
         
         setupViews()
         
         setupConstraints()
+        
+        if let profile = profileService.profile {
+            updateProfileDetails(profile: profile)
+        }
     }
     
-    // MARK: - Helper methods
+    // MARK: - IB Actions
+    @objc private func didTapLogoutButton() {
+        // TODO: - Добавить логику при нажатии на кнопку
+    }
+    
+    // MARK: - Private Methods
+    private func updateAvatar() {
+        guard
+            let profileImageURL = ProfileImageService.shared.profileImageURL,
+            let url = URL(string: profileImageURL)
+        else { return }
+        
+        userPhotoImageView.kf.indicatorType = .activity
+        
+        userPhotoImageView.kf.setImage(with: url)
+    }
+    
     private func setupViews() {
         [userPhotoImageView,
          nameLabel,
@@ -120,8 +162,10 @@ final class ProfileViewController: UIViewController {
         ])
     }
     
-    // MARK: - Action methods
-    @objc private func didTapLogoutButton() {
-        // TODO: - Добавить логику при нажатии на кнопку
+    private func updateProfileDetails(profile: Profile) {
+        nameLabel.text = profile.name
+        nicknameLabel.text = profile.loginName
+        statusLabel.text = profile.bio
     }
+    
 }
