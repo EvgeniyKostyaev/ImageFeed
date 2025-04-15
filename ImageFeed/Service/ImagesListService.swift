@@ -109,7 +109,11 @@ final class ImagesListService {
         }
         
         var request = URLRequest(url: url)
-        request.setValue("Bearer \(oAuth2TokenStorage.token)", forHTTPHeaderField: "Authorization")
+        
+        if let token = oAuth2TokenStorage.token {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+        
         request.httpMethod = "GET"
         
         return request
@@ -122,7 +126,7 @@ final class ImagesListService {
             let photo = PhotoModel(
                 id: photoResult.id,
                 size: CGSize.init(width: photoResult.width, height: photoResult.height),
-                createdAt: Date.from(iso8601String: photoResult.createdAt),
+                createdAt: photoResult.createdAt,
                 welcomeDescription: photoResult.description,
                 thumbImageURL: photoResult.urls.thumb,
                 largeImageURL: photoResult.urls.full,
