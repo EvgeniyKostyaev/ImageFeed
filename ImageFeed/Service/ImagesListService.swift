@@ -20,6 +20,8 @@ final class ImagesListService {
     private let urlSession = URLSession.shared
     private var task: URLSessionTask?
     
+    private let oAuth2TokenStorage = OAuth2TokenStorage()
+    
     private(set) var photos: [PhotoModel] = []
     
     private var lastLoadedPage: Int?
@@ -46,6 +48,7 @@ final class ImagesListService {
                         userInfo: ["URL": photos])
                 
             case .failure(let error):
+                print("[fetchPhotos] Ошибка сети: \(error.localizedDescription)")
             }
         }
     }
@@ -78,7 +81,6 @@ final class ImagesListService {
                     completion(.failure(ServiceError.invalidRequest))
                 }
             case .failure(let error):
-                print("[fetchPhotos] Ошибка сети: \(error.localizedDescription)")
                 completion(.failure(error))
             }
             
@@ -107,6 +109,7 @@ final class ImagesListService {
         }
         
         var request = URLRequest(url: url)
+        request.setValue("Bearer \(oAuth2TokenStorage.token)", forHTTPHeaderField: "Authorization")
         request.httpMethod = "GET"
         
         return request
