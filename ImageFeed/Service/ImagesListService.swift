@@ -41,11 +41,12 @@ final class ImagesListService {
             case .success(let photos):
                 self?.photos.append(contentsOf: photos)
                 
+                guard let self = self else { return }
                 NotificationCenter.default
                     .post(
                         name: ImagesListService.didChangeNotification,
                         object: self,
-                        userInfo: ["URL": photos])
+                        userInfo: ["Photos": self.photos])
                 
             case .failure(let error):
                 print("[fetchPhotos] Ошибка сети: \(error.localizedDescription)")

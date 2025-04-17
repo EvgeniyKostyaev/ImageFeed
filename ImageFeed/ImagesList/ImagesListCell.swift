@@ -9,15 +9,20 @@ import UIKit
 
 final class ImagesListCell: UITableViewCell {
     
-    // MARK: - Static properties
-    
-    static let reuseIdentifier = "ImagesListCell"
-    
     // MARK: - @IBOutlet properties
-    
     @IBOutlet weak var photoImageView: UIImageView!
     
     @IBOutlet weak var likeButton: UIButton!
     
     @IBOutlet weak var dateLabel: UILabel!
+    
+    // MARK: - Static properties
+    static let reuseIdentifier = "ImagesListCell"
+    
+    // MARK: - Overrides Methods
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        photoImageView.kf.cancelDownloadTask()
+    }
 }
