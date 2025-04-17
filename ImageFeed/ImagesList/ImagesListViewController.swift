@@ -115,6 +115,34 @@ extension ImagesListViewController: UITableViewDataSource {
     }
 }
 
+// MARK: - ConfigCell methods
+extension ImagesListViewController {
+    private func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
+        guard let photoImageURL = URL(string: photos[indexPath.row].thumbImageURL) else {
+            return
+        }
+        
+        cell.photoImageView.kf.indicatorType = .activity
+        cell.photoImageView.kf.setImage(
+            with: photoImageURL,
+            placeholder: UIImage(named: "photo_placeholder_icon")) { [weak self] result in
+                switch (result) {
+                case .success(let imageResult):
+                    guard let self = self else { return }
+                    self.tableView.reloadRows(at: [indexPath], with: .automatic)
+                    cell.photoImageView.image = imageResult.image
+                case .failure(let error): print("Error downloading image: \(error)")
+                }
+        }
+        
+        cell.dateLabel.text = dateFormatter.string(from: currentDate)
+        
+        let isLiked = indexPath.row % 2 == 0
+        let imageLike = isLiked ? UIImage(named: "active_icon") : UIImage(named: "inactive_icon")
+        cell.likeButton.setImage(imageLike, for: UIControl.State.normal)
+    }
+}
+
 // MARK: - UITableViewDelegate methods
 extension ImagesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -136,23 +164,6 @@ extension ImagesListViewController: UITableViewDelegate {
         if (indexPath.row + 1 == imagesListService.photos.count) {
             imagesListService.fetchPhotosNextPage()
         }
-    }
-}
-
-extension ImagesListViewController {
-    private func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
-        guard let imageURL = URL(string: photos[indexPath.row].thumbImageURL) else {
-            return
-        }
-        
-        cell.photoImageView.kf.indicatorType = .activity
-        cell.photoImageView.kf.setImage(with: imageURL)
-        
-        cell.dateLabel.text = dateFormatter.string(from: currentDate)
-        
-        let isLiked = indexPath.row % 2 == 0
-        let imageLike = isLiked ? UIImage(named: "active_icon") : UIImage(named: "inactive_icon")
-        cell.likeButton.setImage(imageLike, for: UIControl.State.normal)
     }
 }
 
