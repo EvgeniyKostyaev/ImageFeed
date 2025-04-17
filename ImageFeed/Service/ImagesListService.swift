@@ -23,7 +23,7 @@ final class ImagesListService {
     private let oAuth2TokenStorage = OAuth2TokenStorage()
     
     private(set) var photos: [PhotoModel] = []
-    
+
     private var lastLoadedPage: Int?
     static let perPage = 10
     

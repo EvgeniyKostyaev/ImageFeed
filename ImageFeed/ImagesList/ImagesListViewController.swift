@@ -36,6 +36,8 @@ final class ImagesListViewController: UIViewController {
         
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
         
+        imagesListService.fetchPhotosNextPage()
+        
         imagesListServiceObserver = NotificationCenter.default
             .addObserver(
                 forName: ImagesListService.didChangeNotification,
@@ -44,13 +46,8 @@ final class ImagesListViewController: UIViewController {
             ) { [weak self] _ in
                 guard let self = self else { return }
                 
-                self.photos = self.imagesListService.photos
-                tableView.reloadData()
-                
                 self.updateTableViewAnimated()
             }
-        
-        imagesListService.fetchPhotosNextPage()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -83,7 +80,18 @@ final class ImagesListViewController: UIViewController {
     
     // MARK: - Private Methods
     private func updateTableViewAnimated() {
+        let oldRowsCount = photos.count
+        let newRowsCount = imagesListService.photos.count
+        photos = imagesListService.photos
         
+        if oldRowsCount != newRowsCount {
+            let insertRows = (oldRowsCount..<newRowsCount).map {
+                IndexPath(row: $0, section: 0)
+            }
+            tableView.performBatchUpdates {
+                self.tableView.insertRows(at: insertRows, with: .automatic)
+            } completion: { _ in }
+        }
     }
 }
 
