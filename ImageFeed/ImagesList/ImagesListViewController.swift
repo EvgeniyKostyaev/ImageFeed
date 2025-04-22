@@ -129,8 +129,8 @@ extension ImagesListViewController {
                 switch (result) {
                 case .success(let imageResult):
                     guard let self = self else { return }
-                    self.tableView.reloadRows(at: [indexPath], with: .automatic)
                     cell.photoImageView.image = imageResult.image
+                    self.tableView.reloadRows(at: [indexPath], with: .automatic)
                 case .failure(let error): print("Error downloading image: \(error)")
                 }
         }

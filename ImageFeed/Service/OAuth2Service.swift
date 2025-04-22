@@ -30,7 +30,7 @@ final class OAuth2Service {
         assert(Thread.isMainThread)
         guard lastCode != code else {
             print("[fetchOAuthToken] Ошибка: гонка запросов")
-            completion(.failure(ServiceError.invalidRequest))
+            completion(.failure(ServiceError.requestRace))
             return
         }
         

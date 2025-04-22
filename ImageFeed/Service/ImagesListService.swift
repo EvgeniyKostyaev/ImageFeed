@@ -54,17 +54,20 @@ final class ImagesListService {
         }
     }
     
+    func changeLike(photoId: String, isLike: Bool, completion: @escaping (Result<Void, Error>) -> Void) {
+        
+    }
+    
     // MARK: - Private Methods
     private func fetchPhotos(page: Int, perPage: Int, completion: @escaping (Result<[PhotoModel], Error>) -> Void) {
         assert(Thread.isMainThread)
         guard lastLoadedPage != page else {
             print("[fetchPhotos] Ошибка: гонка запросов")
-            completion(.failure(ServiceError.invalidRequest))
+            completion(.failure(ServiceError.requestRace))
             return
         }
-        
+
         task?.cancel()
-        lastLoadedPage = page
         
         guard let request = makePhotosRequest(page: page, perPage: perPage) else {
             print("[fetchPhotos] Ошибка: не удалось создать запрос фотографий")
@@ -76,24 +79,29 @@ final class ImagesListService {
             switch result {
             case .success(let data):
                 if let photos = self?.convert(photoResults: data) {
+                    self?.lastLoadedPage = page
                     completion(.success(photos))
                 } else {
                     print("[fetchPhotos] Ошибка конвертирования")
+                    self?.handleLoadError(page: page)
                     completion(.failure(ServiceError.invalidRequest))
                 }
             case .failure(let error):
+                self?.handleLoadError(page: page)
                 completion(.failure(error))
             }
-            
             self?.task = nil
-            self?.lastLoadedPage = (page == 1) ? nil : page - 1
         }
         
         self.task = task
         task.resume()
     }
+
+    private func handleLoadError(page: Int) {
+        lastLoadedPage = (page > 1) ? page - 1 : nil
+        print("[fetchPhotos] Ошибка загрузки страницы \(page). LastLoadedPage обновлён: \(lastLoadedPage ?? 0)")
+    }
     
-    // MARK: - Private Methods
     private func makePhotosRequest(page: Int, perPage: Int) -> URLRequest? {
         
         guard var urlComponents = URLComponents(string: ImagesListServiceConstants.unsplashPhotosURLString) else {

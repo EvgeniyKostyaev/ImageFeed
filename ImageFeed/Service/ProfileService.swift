@@ -32,7 +32,7 @@ final class ProfileService {
         assert(Thread.isMainThread)
         guard lastToken != token else {
             print("[fetchProfile] Ошибка: гонка запросов")
-            completion(.failure(ServiceError.invalidRequest))
+            completion(.failure(ServiceError.requestRace))
             return
         }
         
