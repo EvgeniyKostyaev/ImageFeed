@@ -134,11 +134,14 @@ extension ImagesListViewController {
                 case .failure(let error): print("Error downloading image: \(error)")
                 }
         }
+         
+        if let createdDate = photos[indexPath.row].createdAt {
+            cell.dateLabel.text = dateFormatter.string(from: createdDate)
+        } else {
+            cell.dateLabel.text = "-"
+        }
         
-        cell.dateLabel.text = dateFormatter.string(from: currentDate)
-        
-        let isLiked = indexPath.row % 2 == 0
-        let imageLike = isLiked ? UIImage(named: "active_icon") : UIImage(named: "inactive_icon")
+        let imageLike = photos[indexPath.row].isLiked ? UIImage(named: "active_icon") : UIImage(named: "inactive_icon")
         cell.likeButton.setImage(imageLike, for: UIControl.State.normal)
     }
 }
