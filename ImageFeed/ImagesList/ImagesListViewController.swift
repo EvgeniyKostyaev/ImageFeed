@@ -122,6 +122,8 @@ extension ImagesListViewController {
             return
         }
         
+        cell.delegate = self
+        
         cell.photoImageView.kf.indicatorType = .activity
         cell.photoImageView.kf.setImage(
             with: photoImageURL,
@@ -143,6 +145,8 @@ extension ImagesListViewController {
         
         let imageLike = photos[indexPath.row].isLiked ? UIImage(named: "active_icon") : UIImage(named: "inactive_icon")
         cell.likeButton.setImage(imageLike, for: UIControl.State.normal)
+        
+        cell.object = photos[indexPath.row]
     }
 }
 
@@ -166,6 +170,15 @@ extension ImagesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if (indexPath.row + 1 == imagesListService.photos.count) {
             imagesListService.fetchPhotosNextPage()
+        }
+    }
+}
+
+// MARK: - ImagesListCellDelegate
+extension ImagesListViewController: ImagesListCellDelegate {
+    func imageListCellDidTapLike(_ cell: ImagesListCell, didTapLikeButtonFor object: Any?) {
+        if let photo = object as? PhotoModel {
+            print("PhotoId: \(photo.id)")
         }
     }
 }

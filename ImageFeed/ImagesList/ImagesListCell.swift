@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol ImagesListCellDelegate: AnyObject {
+    func imageListCellDidTapLike(_ cell: ImagesListCell, didTapLikeButtonFor object: Any?)
+}
+
 final class ImagesListCell: UITableViewCell {
     
     // MARK: - @IBOutlet properties
@@ -15,6 +19,11 @@ final class ImagesListCell: UITableViewCell {
     @IBOutlet weak var likeButton: UIButton!
     
     @IBOutlet weak var dateLabel: UILabel!
+    
+    // MARK: - Public Properties
+    weak var delegate: ImagesListCellDelegate?
+    
+    var object: Any?
     
     // MARK: - Static properties
     static let reuseIdentifier = "ImagesListCell"
@@ -25,4 +34,10 @@ final class ImagesListCell: UITableViewCell {
         
         photoImageView.kf.cancelDownloadTask()
     }
+    
+    // MARK: - IB Actions
+    @IBAction func likeButtonClicked(_ sender: Any) {
+        delegate?.imageListCellDidTapLike(self, didTapLikeButtonFor: object)
+    }
+    
 }
