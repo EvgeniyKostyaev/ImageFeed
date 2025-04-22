@@ -143,10 +143,7 @@ extension ImagesListViewController {
             cell.dateLabel.text = "-"
         }
         
-        let imageLike = photos[indexPath.row].isLiked ? UIImage(named: "active_icon") : UIImage(named: "inactive_icon")
-        cell.likeButton.setImage(imageLike, for: UIControl.State.normal)
-        
-        cell.object = photos[indexPath.row]
+        cell.setIsLiked(photos[indexPath.row].isLiked)
     }
 }
 
@@ -176,9 +173,20 @@ extension ImagesListViewController: UITableViewDelegate {
 
 // MARK: - ImagesListCellDelegate
 extension ImagesListViewController: ImagesListCellDelegate {
-    func imageListCellDidTapLike(_ cell: ImagesListCell, didTapLikeButtonFor object: Any?) {
-        if let photo = object as? PhotoModel {
-            print("PhotoId: \(photo.id)")
+    func imageListCellDidTapLike(_ cell: ImagesListCell) {
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
+        let photo = photos[indexPath.row]
+        
+        imagesListService.changeLike(photoId: photo.id, isLike: !photo.isLiked) { [weak self] result in
+            switch result {
+            case .success(let updatedPhoto):
+                guard let self = self else { return }
+                
+                self.photos[indexPath.row] = updatedPhoto
+                
+                cell.setIsLiked(updatedPhoto.isLiked)
+            case .failure(let error): print(error)
+            }
         }
     }
 }

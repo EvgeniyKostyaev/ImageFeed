@@ -8,7 +8,7 @@
 import UIKit
 
 protocol ImagesListCellDelegate: AnyObject {
-    func imageListCellDidTapLike(_ cell: ImagesListCell, didTapLikeButtonFor object: Any?)
+    func imageListCellDidTapLike(_ cell: ImagesListCell)
 }
 
 final class ImagesListCell: UITableViewCell {
@@ -23,8 +23,6 @@ final class ImagesListCell: UITableViewCell {
     // MARK: - Public Properties
     weak var delegate: ImagesListCellDelegate?
     
-    var object: Any?
-    
     // MARK: - Static properties
     static let reuseIdentifier = "ImagesListCell"
     
@@ -37,7 +35,13 @@ final class ImagesListCell: UITableViewCell {
     
     // MARK: - IB Actions
     @IBAction func likeButtonClicked(_ sender: Any) {
-        delegate?.imageListCellDidTapLike(self, didTapLikeButtonFor: object)
+        delegate?.imageListCellDidTapLike(self)
+    }
+    
+    // MARK: - Public Methods
+    func setIsLiked(_ isLiked: Bool) {
+        let imageLike = isLiked ? UIImage(named: "active_icon") : UIImage(named: "inactive_icon")
+        likeButton.setImage(imageLike, for: UIControl.State.normal)
     }
     
 }
