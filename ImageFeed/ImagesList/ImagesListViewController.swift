@@ -176,18 +176,16 @@ extension ImagesListViewController: ImagesListCellDelegate {
         let photo = photos[indexPath.row]
         
         UIBlockingProgressHUD.show()
-        imagesListService.changeLike(photoId: photo.id, isLike: !photo.isLiked) { [weak self] result in
+        imagesListService.changeLike(photoId: photo.id, isLike: !photo.isLiked) { result in
             switch result {
             case .success(let updatedPhoto):
-                guard let self = self else { return }
-                
                 self.photos[indexPath.row] = updatedPhoto
-                
                 cell.setIsLiked(updatedPhoto.isLiked)
                 
                 UIBlockingProgressHUD.dismiss()
-            case .failure(let error): print(error)
+            case .failure(let error):
                 UIBlockingProgressHUD.dismiss()
+                print(error)
             }
         }
     }
