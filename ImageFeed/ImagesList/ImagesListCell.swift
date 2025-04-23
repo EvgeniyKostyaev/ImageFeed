@@ -31,6 +31,9 @@ final class ImagesListCell: UITableViewCell {
         super.prepareForReuse()
         
         photoImageView.kf.cancelDownloadTask()
+        photoImageView.image = nil
+        dateLabel.text = nil
+        likeButton.setImage(nil, for: .normal)
     }
     
     // MARK: - IB Actions
