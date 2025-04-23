@@ -60,19 +60,8 @@ final class ImagesListViewController: UIViewController {
                 return
             }
             
-            var imageData = Data()
-            do {
-                guard let imageURL = URL(string: photos[indexPath.row].largeImageURL) else {
-                    return
-                }
-                imageData = try Data(contentsOf: imageURL)
-            } catch {
-                print("Failed to load image: \(error.localizedDescription)")
-                return
-            }
-            
-            let image = UIImage(data: imageData)
-            viewController.image = image
+            guard let photoImageURL = URL(string: photos[indexPath.row].largeImageURL) else { return }
+            viewController.photoImageURL = photoImageURL
         } else {
             super.prepare(for: segue, sender: sender)
         }
@@ -176,15 +165,16 @@ extension ImagesListViewController: ImagesListCellDelegate {
         let photo = photos[indexPath.row]
         
         UIBlockingProgressHUD.show()
-        imagesListService.changeLike(photoId: photo.id, isLike: !photo.isLiked) { result in
+        imagesListService.changeLike(photoId: photo.id, isLike: !photo.isLiked) { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
+            
+            guard let self else { return }
+            
             switch result {
             case .success(let updatedPhoto):
                 self.photos[indexPath.row] = updatedPhoto
                 cell.setIsLiked(updatedPhoto.isLiked)
-                
-                UIBlockingProgressHUD.dismiss()
             case .failure(let error):
-                UIBlockingProgressHUD.dismiss()
                 print(error)
             }
         }

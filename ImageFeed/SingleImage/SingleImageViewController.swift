@@ -19,7 +19,7 @@ final class SingleImageViewController: UIViewController {
     @IBOutlet private weak var shareButton: UIButton!
     
     // MARK: - Public Properties
-    var image: UIImage? {
+    var photoImageURL: URL? {
         didSet {
             guard isViewLoaded else { return }
             
@@ -43,7 +43,7 @@ final class SingleImageViewController: UIViewController {
     }
     
     @IBAction private func didTapShareButton(_ sender: Any) {
-        guard let image else { return }
+        guard let image = imageView.image else { return }
         let share = UIActivityViewController(
             activityItems: [image],
             applicationActivities: nil
@@ -53,10 +53,23 @@ final class SingleImageViewController: UIViewController {
     
     // MARK: - Private Methods
     private func setupImageAndScrollView() {
-        guard let image = image else { return }
-        imageView.image = image
-        imageView.frame.size = image.size
-        rescaleAndCenterImageInScrollView(image: image)
+        guard let photoImageURL = photoImageURL else { return }
+        
+        UIBlockingProgressHUD.show()
+        imageView.kf.setImage(
+            with: photoImageURL) { [weak self] result in
+                UIBlockingProgressHUD.dismiss()
+                
+                guard let self else { return }
+                
+                switch (result) {
+                case .success(let imageResult):
+                    self.imageView.frame.size = imageResult.image.size
+                    self.rescaleAndCenterImageInScrollView(image: imageResult.image)
+                case .failure:
+                    self.showError()
+                }
+            }
     }
     
     private func rescaleAndCenterImageInScrollView(image: UIImage) {
@@ -76,6 +89,33 @@ final class SingleImageViewController: UIViewController {
         scrollView.setContentOffset(CGPoint(x: x, y: y), animated: false)
     }
     
+    private func showError() {
+        let alert = UIAlertController(
+            title: "Что-то пошло не так",
+            message: "Попробовать ещё раз?",
+            preferredStyle: .alert
+        )
+        
+        let yesAction = UIAlertAction(
+            title: "Повторить",
+            style: .default,
+            handler: { [ weak self ] _ in
+                guard let self else { return }
+                self.setupImageAndScrollView()
+            }
+        )
+        
+        let noAction = UIAlertAction(
+            title: "Не надо",
+            style: .default,
+            handler: nil
+        )
+        
+        alert.addAction(noAction)
+        alert.addAction(yesAction)
+        
+        self.present(alert, animated: true, completion: nil)
+    }
 }
 
 // MARK: - UIScrollViewDelegate methods
