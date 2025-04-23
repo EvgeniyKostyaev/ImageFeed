@@ -127,15 +127,14 @@ extension ImagesListViewController {
         cell.photoImageView.kf.indicatorType = .activity
         cell.photoImageView.kf.setImage(
             with: photoImageURL,
-            placeholder: UIImage(named: "photo_placeholder_icon")) { [weak self] result in
+            placeholder: UIImage(named: "photo_placeholder_icon")) { result in
                 switch (result) {
                 case .success(let imageResult):
-                    guard let self = self else { return }
                     cell.photoImageView.image = imageResult.image
                 case .failure(let error): print("Error downloading image: \(error)")
                 }
-        }
-         
+            }
+        
         if let createdDate = photos[indexPath.row].createdAt {
             cell.dateLabel.text = dateFormatter.string(from: createdDate)
         } else {
