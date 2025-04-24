@@ -24,6 +24,14 @@ final class ProfileLogoutService {
         oAuth2TokenStorage.token = nil
         
         cleanCookies()
+        
+        guard let window = UIApplication.shared.windows.first else {
+            assertionFailure("Invalid window configuration")
+            return
+        }
+        
+        window.rootViewController = SplashViewController()
+        window.makeKeyAndVisible()
     }
     
     // MARK: - Private Methods
