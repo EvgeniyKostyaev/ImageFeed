@@ -7,6 +7,7 @@
 
 import Foundation
 import WebKit
+import Kingfisher
 
 final class ProfileLogoutService {
     
@@ -16,12 +17,15 @@ final class ProfileLogoutService {
     // MARK: - Private Properties
     private let oAuth2TokenStorage = OAuth2TokenStorage()
     
+    private let kingfisherManager = KingfisherManager.shared
+    
     // MARK: - Initializers
     private init() {}
     
     // MARK: - Public Methods
     func logout() {
         oAuth2TokenStorage.token = nil
+        kingfisherManager.cache.clearCache()
         
         cleanCookies()
         
