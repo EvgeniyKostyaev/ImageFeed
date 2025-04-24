@@ -16,6 +16,8 @@ final class ImagesListService {
     // MARK: - Public Properties
     static let shared = ImagesListService()
     
+    static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
+    
     // MARK: - Private Properties
     private let urlSession = URLSession.shared
     private var task: URLSessionTask?
@@ -25,11 +27,9 @@ final class ImagesListService {
     private(set) var photos: [PhotoModel] = []
     
     private var lastLoadedPage: Int?
-    static let perPage = 10
+    private let perPage = 10
     
     private var lastPhotoId: String?
-    
-    static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
     
     // MARK: - Initializers
     private init() {}
@@ -38,7 +38,7 @@ final class ImagesListService {
     func fetchPhotosNextPage() {
         let nextPage = (lastLoadedPage ?? 0) + 1
         
-        fetchPhotos(page: nextPage, perPage: ImagesListService.perPage) { [weak self] result in
+        fetchPhotos(page: nextPage, perPage: perPage) { [weak self] result in
             switch result {
             case .success(let photos):
                 self?.photos.append(contentsOf: photos)
