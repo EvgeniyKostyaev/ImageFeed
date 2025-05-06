@@ -46,22 +46,21 @@ final class ProfileService {
         }
         
         let task = urlSession.objectTask(for: request) { [weak self] (result: Result<ProfileResult, Error>) in
+            
+            guard let self else { return }
+            
             switch result {
             case .success(let data):
-                if let profile = self?.convert(profileResult: data) {
-                    self?.profile = profile
-                    completion(.success(profile))
-                } else {
-                    print("[fetchProfile] Ошибка конвертирования")
-                    completion(.failure(ServiceError.invalidRequest))
-                }
+                let profile = self.convert(profileResult: data)
+                self.profile = profile
+                completion(.success(profile))
             case .failure(let error):
                 print("[fetchProfile] Ошибка сети: \(error.localizedDescription)")
                 completion(.failure(error))
             }
             
-            self?.task = nil
-            self?.lastToken = nil
+            self.task = nil
+            self.lastToken = nil
         }
         
         self.task = task
@@ -81,7 +80,7 @@ final class ProfileService {
         
         var request = URLRequest(url: url)
         request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
-        request.httpMethod = "GET"
+        request.httpMethod = ServiceRequestType.get.rawValue
         
         return request
      }

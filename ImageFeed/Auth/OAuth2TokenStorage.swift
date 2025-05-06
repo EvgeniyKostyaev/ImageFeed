@@ -14,6 +14,9 @@ private enum Keys: String {
 
 final class OAuth2TokenStorage {
     
+    // MARK: - Public Properties
+    static let shared = OAuth2TokenStorage()
+    
     var token: String? {
         get {
             KeychainWrapper.standard.string(forKey: Keys.token.rawValue)
@@ -26,4 +29,7 @@ final class OAuth2TokenStorage {
             }
         }
     }
+    
+    // MARK: - Initializers
+    private init() {}
 }

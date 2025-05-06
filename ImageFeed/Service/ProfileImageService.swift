@@ -48,10 +48,13 @@ final class ProfileImageService {
         }
         
         let task = urlSession.objectTask(for: request) { [weak self] (result: Result<UserResult, Error>) in
+            
+            guard let self else { return }
+            
             switch result {
             case .success(let data):
                 let profileImageURL = data.profileImage.large
-                self?.profileImageURL = profileImageURL
+                self.profileImageURL = profileImageURL
                 completion(.success(profileImageURL))
                 
                 NotificationCenter.default
@@ -64,8 +67,8 @@ final class ProfileImageService {
                 completion(.failure(error))
             }
             
-            self?.task = nil
-            self?.lastToken = nil
+            self.task = nil
+            self.lastToken = nil
         }
         
         self.task = task
@@ -81,7 +84,7 @@ final class ProfileImageService {
         
         var request = URLRequest(url: url)
         request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
-        request.httpMethod = "GET"
+        request.httpMethod = ServiceRequestType.get.rawValue
         
         return request
      }

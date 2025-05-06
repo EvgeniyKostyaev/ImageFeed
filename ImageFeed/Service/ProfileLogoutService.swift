@@ -15,7 +15,7 @@ final class ProfileLogoutService {
     static let shared = ProfileLogoutService()
     
     // MARK: - Private Properties
-    private let oAuth2TokenStorage = OAuth2TokenStorage()
+    private let oAuth2TokenStorage = OAuth2TokenStorage.shared
     
     private let kingfisherManager = KingfisherManager.shared
     

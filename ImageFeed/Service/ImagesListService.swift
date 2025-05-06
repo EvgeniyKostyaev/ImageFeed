@@ -22,7 +22,7 @@ final class ImagesListService {
     private let urlSession = URLSession.shared
     private var task: URLSessionTask?
     
-    private let oAuth2TokenStorage = OAuth2TokenStorage()
+    private let oAuth2TokenStorage = OAuth2TokenStorage.shared
     
     private(set) var photos: [PhotoModel] = []
     
@@ -41,9 +41,10 @@ final class ImagesListService {
         fetchPhotos(page: nextPage, perPage: perPage) { [weak self] result in
             switch result {
             case .success(let photos):
-                self?.photos.append(contentsOf: photos)
-                
                 guard let self = self else { return }
+                
+                self.photos.append(contentsOf: photos)
+                
                 NotificationCenter.default
                     .post(
                         name: ImagesListService.didChangeNotification,
@@ -74,21 +75,20 @@ final class ImagesListService {
         }
         
         let task = urlSession.objectTask(for: request) { [weak self] (result: Result<PhotoUpdatedResult, Error>) in
+            
+            guard let self else { return }
+            
             switch result {
             case .success(let data):
-                if let photo = self?.convert(photoResult: data.photo) {
-                    completion(.success(photo))
-                } else {
-                    print("[changeLike] Ошибка конвертирования")
-                    completion(.failure(ServiceError.invalidRequest))
-                }
+                let photo = self.convert(photoResult: data.photo)
+                completion(.success(photo))
             case .failure(let error):
                 print("[changeLike] Ошибка сети: \(error.localizedDescription)")
                 completion(.failure(error))
             }
             
-            self?.task = nil
-            self?.lastPhotoId = nil
+            self.task = nil
+            self.lastPhotoId = nil
         }
         
         self.task = task
@@ -113,21 +113,19 @@ final class ImagesListService {
         }
         
         let task = urlSession.objectTask(for: request) { [weak self] (result: Result<[PhotoResult], Error>) in
+            
+            guard let self else { return }
+            
             switch result {
             case .success(let data):
-                if let photos = self?.convert(photoResults: data) {
-                    self?.lastLoadedPage = page
-                    completion(.success(photos))
-                } else {
-                    print("[fetchPhotos] Ошибка конвертирования")
-                    self?.handleLoadError(page: page)
-                    completion(.failure(ServiceError.invalidRequest))
-                }
+                let photos = self.convert(photoResults: data)
+                self.lastLoadedPage = page
+                completion(.success(photos))
             case .failure(let error):
-                self?.handleLoadError(page: page)
+                self.handleLoadError(page: page)
                 completion(.failure(error))
             }
-            self?.task = nil
+            self.task = nil
         }
         
         self.task = task
@@ -160,7 +158,7 @@ final class ImagesListService {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
         
-        request.httpMethod = "GET"
+        request.httpMethod = ServiceRequestType.get.rawValue
         
         return request
     }
@@ -176,11 +174,7 @@ final class ImagesListService {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
         
-        if (isLike) {
-            request.httpMethod = "POST"
-        } else {
-            request.httpMethod = "DELETE"
-        }
+        request.httpMethod = isLike ? ServiceRequestType.post.rawValue : ServiceRequestType.delete.rawValue
         
         return request
     }
