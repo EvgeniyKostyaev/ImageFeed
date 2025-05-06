@@ -22,17 +22,17 @@ final class ProfileService {
     private var task: URLSessionTask?
     private var lastToken: String?
     
-    private(set) var profile: Profile?
+    private(set) var profile: ProfileModel?
     
     // MARK: - Initializers
     private init() {}
     
     // MARK: - Public Methods
-    func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void) {
+    func fetchProfile(_ token: String, completion: @escaping (Result<ProfileModel, Error>) -> Void) {
         assert(Thread.isMainThread)
         guard lastToken != token else {
             print("[fetchProfile] Ошибка: гонка запросов")
-            completion(.failure(ServiceError.invalidRequest))
+            completion(.failure(ServiceError.requestRace))
             return
         }
         
@@ -46,22 +46,21 @@ final class ProfileService {
         }
         
         let task = urlSession.objectTask(for: request) { [weak self] (result: Result<ProfileResult, Error>) in
+            
+            guard let self else { return }
+            
             switch result {
             case .success(let data):
-                if let profile = self?.convert(profileResult: data) {
-                    self?.profile = profile
-                    completion(.success(profile))
-                } else {
-                    print("[fetchProfile] Ошибка конвертирования")
-                    completion(.failure(ServiceError.invalidRequest))
-                }
+                let profile = self.convert(profileResult: data)
+                self.profile = profile
+                completion(.success(profile))
             case .failure(let error):
                 print("[fetchProfile] Ошибка сети: \(error.localizedDescription)")
                 completion(.failure(error))
             }
             
-            self?.task = nil
-            self?.lastToken = nil
+            self.task = nil
+            self.lastToken = nil
         }
         
         self.task = task
@@ -81,13 +80,13 @@ final class ProfileService {
         
         var request = URLRequest(url: url)
         request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
-        request.httpMethod = "GET"
+        request.httpMethod = ServiceRequestType.get.rawValue
         
         return request
      }
     
-    private func convert(profileResult: ProfileResult) -> Profile {
-        let profile = Profile(
+    private func convert(profileResult: ProfileResult) -> ProfileModel {
+        let profile = ProfileModel(
             username: profileResult.username,
             name: "\(profileResult.firstName ?? String()) \(profileResult.lastName ?? String())",
             loginName: profileResult.firstName != nil ? "@\(profileResult.firstName ?? String())" : String(),

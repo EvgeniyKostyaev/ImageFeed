@@ -12,5 +12,6 @@ final class SnakeCaseJSONDecoder: JSONDecoder, @unchecked Sendable {
         super.init()
         
         keyDecodingStrategy = .convertFromSnakeCase
+        dateDecodingStrategy = .iso8601
     }
 }

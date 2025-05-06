@@ -15,7 +15,7 @@ enum SplashViewControllerTheme {
 final class SplashViewController: UIViewController {
 
     // MARK: - Private Properties
-    private let storage = OAuth2TokenStorage()
+    private let storage = OAuth2TokenStorage.shared
     private let profileService = ProfileService.shared
     private let profileImageService = ProfileImageService.shared
     
@@ -59,12 +59,12 @@ final class SplashViewController: UIViewController {
     private func fetchProfile(_ token: String) {
         UIBlockingProgressHUD.show()
         profileService.fetchProfile(token) { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
+            
+            guard let self else { return }
+            
             switch(result) {
             case .success(let profile):
-                UIBlockingProgressHUD.dismiss()
-                
-                guard let self = self else { return }
-                
                 if let username = profile.username {
                     self.profileImageService.fetchProfileImageURL(token: token, username: username) { result in
                     }
@@ -72,8 +72,6 @@ final class SplashViewController: UIViewController {
                 
                 self.switchToTabBarController()
             case .failure(let error):
-                UIBlockingProgressHUD.dismiss()
-                
                 print("Error: \(error)")
             }
         }

@@ -81,6 +81,7 @@ final class ProfileViewController: UIViewController {
     }()
     
     private let profileService = ProfileService.shared
+    private let profileLogoutService = ProfileLogoutService.shared
     
     private var profileImageServiceObserver: NSObjectProtocol?
     
@@ -110,7 +111,7 @@ final class ProfileViewController: UIViewController {
     
     // MARK: - IB Actions
     @objc private func didTapLogoutButton() {
-        // TODO: - Добавить логику при нажатии на кнопку
+        showLogoutUserMessage()
     }
     
     // MARK: - Private Methods
@@ -162,10 +163,39 @@ final class ProfileViewController: UIViewController {
         ])
     }
     
-    private func updateProfileDetails(profile: Profile) {
+    private func updateProfileDetails(profile: ProfileModel) {
         nameLabel.text = profile.name
         nicknameLabel.text = profile.loginName
         statusLabel.text = profile.bio
+    }
+    
+    private func showLogoutUserMessage() {
+        let alert = UIAlertController(
+            title: "Вы действительно хотите выйти?",
+            message: nil,
+            preferredStyle: .alert
+        )
+        
+        let yesAction = UIAlertAction(
+            title: "Да",
+            style: .default,
+            handler: { [ weak self ] _ in
+                guard let self else { return }
+                
+                self.profileLogoutService.logout()
+            }
+        )
+        
+        let noAction = UIAlertAction(
+            title: "Нет",
+            style: .default,
+            handler: nil
+        )
+        
+        alert.addAction(noAction)
+        alert.addAction(yesAction)
+        
+        self.present(alert, animated: true, completion: nil)
     }
     
 }

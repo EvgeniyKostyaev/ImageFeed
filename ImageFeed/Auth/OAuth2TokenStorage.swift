@@ -14,7 +14,8 @@ private enum Keys: String {
 
 final class OAuth2TokenStorage {
     
-    private let storage: UserDefaults = .standard
+    // MARK: - Public Properties
+    static let shared = OAuth2TokenStorage()
     
     var token: String? {
         get {
@@ -28,4 +29,7 @@ final class OAuth2TokenStorage {
             }
         }
     }
+    
+    // MARK: - Initializers
+    private init() {}
 }

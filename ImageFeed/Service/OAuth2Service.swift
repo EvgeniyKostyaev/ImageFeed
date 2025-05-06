@@ -30,7 +30,7 @@ final class OAuth2Service {
         assert(Thread.isMainThread)
         guard lastCode != code else {
             print("[fetchOAuthToken] Ошибка: гонка запросов")
-            completion(.failure(ServiceError.invalidRequest))
+            completion(.failure(ServiceError.requestRace))
             return
         }
         
@@ -44,6 +44,9 @@ final class OAuth2Service {
         }
         
         let task = urlSession.objectTask(for: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
+            
+            guard let self else { return }
+            
             switch result {
             case .success(let data):
                 completion(.success(data))
@@ -52,8 +55,8 @@ final class OAuth2Service {
                 completion(.failure(error))
             }
             
-            self?.task = nil
-            self?.lastCode = nil
+            self.task = nil
+            self.lastCode = nil
         }
         
         self.task = task
@@ -80,7 +83,7 @@ final class OAuth2Service {
         }
         
         var request = URLRequest(url: url)
-        request.httpMethod = "POST"
+        request.httpMethod = ServiceRequestType.post.rawValue
         
         return request
      }

@@ -65,6 +65,9 @@
                                                     </constraints>
                                                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                     <state key="normal" image="active_icon"/>
+                                                    <connections>
+                                                        <action selector="likeButtonClicked:" destination="bKM-H4-mws" eventType="touchUpInside" id="edW-xe-xvk"/>
+                                                    </connections>
                                                 </button>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ya4-eI-DLD" customClass="GradientView" customModule="ImageFeed" customModuleProvider="target">
                                                     <rect key="frame" x="16" y="166" width="361" height="30"/>
