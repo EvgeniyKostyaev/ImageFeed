@@ -23,19 +23,6 @@ protocol WebViewViewControllerProtocol: AnyObject {
 }
 
 final class WebViewViewController: UIViewController & WebViewViewControllerProtocol {
-    var presenter: WebViewPresenterProtocol?
-    
-    func load(request: URLRequest) {
-        webView.load(request)
-    }
-    
-    func setProgressValue(_ newValue: Float) {
-        progressView.progress = newValue
-    }
-
-    func setProgressHidden(_ isHidden: Bool) {
-        progressView.isHidden = isHidden
-    }
     
     // MARK: - IB Outlets
     @IBOutlet weak private var webView: WKWebView!
@@ -43,6 +30,8 @@ final class WebViewViewController: UIViewController & WebViewViewControllerProto
     
     // MARK: - Public Properties
     weak var delegate: WebViewViewControllerDelegate?
+    
+    var presenter: WebViewPresenterProtocol?
     
     // MARK: - Private Properties
     private var estimatedProgressObservation: NSKeyValueObservation?
@@ -62,6 +51,20 @@ final class WebViewViewController: UIViewController & WebViewViewControllerProto
                  guard let self = self else { return }
                  self.presenter?.didUpdateProgressValue(webView.estimatedProgress)
              })
+    }
+    
+    
+    // MARK: - Public Methods (WebViewViewControllerProtocol)
+    func load(request: URLRequest) {
+        webView.load(request)
+    }
+    
+    func setProgressValue(_ newValue: Float) {
+        progressView.progress = newValue
+    }
+
+    func setProgressHidden(_ isHidden: Bool) {
+        progressView.isHidden = isHidden
     }
     
     // MARK: - Private Methods
