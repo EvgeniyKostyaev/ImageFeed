@@ -51,15 +51,21 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
             ) { [weak self] _ in
                 guard let self else { return }
                 
-                let oldRowsCount = self.photos.count
-                let newRowsCount = self.imagesListService.photos.count
-                self.photos = self.imagesListService.photos
-                
-                if oldRowsCount != newRowsCount {
-                    let insertRows = (oldRowsCount..<newRowsCount).map {
+                let oldCount = self.photos.count
+                var newPhotos = self.imagesListService.photos
+
+                if oldCount > 0 {
+                    for i in 0..<min(oldCount, newPhotos.count) {
+                        newPhotos[i].isLiked = self.photos[i].isLiked
+                    }
+                }
+
+                self.photos = newPhotos
+
+                if newPhotos.count > oldCount {
+                    let insertRows = (oldCount..<newPhotos.count).map {
                         IndexPath(row: $0, section: 0)
                     }
-                    
                     self.view?.updateTableViewAnimated(insertRows: insertRows)
                 }
             }
