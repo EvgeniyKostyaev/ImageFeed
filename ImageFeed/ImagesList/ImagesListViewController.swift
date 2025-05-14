@@ -8,18 +8,22 @@
 import UIKit
 import Kingfisher
 
-final class ImagesListViewController: UIViewController {
+protocol ImagesListViewControllerProtocol {
+    var presenter: ImagesListPresenterProtocol? { get set }
+    
+    func updateTableViewAnimated(insertRows: [IndexPath])
+}
+
+final class ImagesListViewController: UIViewController, ImagesListViewControllerProtocol {
     
     // MARK: - IB Outlets
     @IBOutlet private var tableView: UITableView!
     
+    // MARK: - Public Properties
+    var presenter: ImagesListPresenterProtocol?
+    
     // MARK: - Private Properties
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
-    
-    private var photos: [PhotoModel] = []
-    private let currentDate = Date()
-    
-    private let imagesListService = ImagesListService.shared
     
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -28,26 +32,13 @@ final class ImagesListViewController: UIViewController {
         return formatter
     }()
     
-    private var imagesListServiceObserver: NSObjectProtocol?
-    
     // MARK: - Overrides Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
         
-        imagesListService.fetchPhotosNextPage()
-        
-        imagesListServiceObserver = NotificationCenter.default
-            .addObserver(
-                forName: ImagesListService.didChangeNotification,
-                object: nil,
-                queue: .main
-            ) { [weak self] _ in
-                guard let self = self else { return }
-                
-                self.updateTableViewAnimated()
-            }
+        presenter?.viewDidLoad()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -60,34 +51,27 @@ final class ImagesListViewController: UIViewController {
                 return
             }
             
-            guard let photoImageURL = URL(string: photos[indexPath.row].largeImageURL) else { return }
+            guard let photos = presenter?.getPhotos(), let photoImageURL = URL(string: photos[indexPath.row].largeImageURL) else { return }
             viewController.photoImageURL = photoImageURL
         } else {
             super.prepare(for: segue, sender: sender)
         }
     }
     
-    // MARK: - Private Methods
-    private func updateTableViewAnimated() {
-        let oldRowsCount = photos.count
-        let newRowsCount = imagesListService.photos.count
-        photos = imagesListService.photos
-        
-        if oldRowsCount != newRowsCount {
-            let insertRows = (oldRowsCount..<newRowsCount).map {
-                IndexPath(row: $0, section: 0)
-            }
-            tableView.performBatchUpdates {
-                self.tableView.insertRows(at: insertRows, with: .automatic)
-            } completion: { _ in }
-        }
+    // MARK: - Public Methods
+    func updateTableViewAnimated(insertRows: [IndexPath]) {
+        tableView.performBatchUpdates {
+            self.tableView.insertRows(at: insertRows, with: .automatic)
+        } completion: { _ in }
     }
+    
+    // MARK: - Private Methods
 }
 
 // MARK: - UITableViewDataSource methods
 extension ImagesListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return photos.count
+        return presenter?.getPhotos().count ?? Int()
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -107,7 +91,7 @@ extension ImagesListViewController: UITableViewDataSource {
 // MARK: - ConfigCell methods
 extension ImagesListViewController {
     private func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
-        guard let photoImageURL = URL(string: photos[indexPath.row].thumbImageURL) else {
+        guard let photos = presenter?.getPhotos(), let photoImageURL = URL(string: photos[indexPath.row].thumbImageURL) else {
             return
         }
         
