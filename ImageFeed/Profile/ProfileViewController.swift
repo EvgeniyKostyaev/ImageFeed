@@ -77,6 +77,8 @@ final class ProfileViewController: UIViewController {
         )
         logoutButton.tintColor = ProfileViewControllerTheme.logoutButtonCollor
         
+        logoutButton.accessibilityIdentifier = "LogoutButton"
+        
         return logoutButton
     }()
     
@@ -185,6 +187,8 @@ final class ProfileViewController: UIViewController {
                 self.profileLogoutService.logout()
             }
         )
+        
+        yesAction.accessibilityIdentifier = "YesAction"
         
         let noAction = UIAlertAction(
             title: "Нет",
