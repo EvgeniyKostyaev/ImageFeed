@@ -57,7 +57,7 @@ final class ImagesListViewController: UIViewController, ImagesListViewController
                 return
             }
             
-            guard let photos = presenter?.getPhotos(), let photoImageURL = URL(string: photos[indexPath.row].largeImageURL) else { return }
+            let photoImageURL = presenter?.getLargeImageURL(for: indexPath)
             viewController.photoImageURL = photoImageURL
         } else {
             super.prepare(for: segue, sender: sender)

@@ -17,9 +17,17 @@ protocol ImagesListPresenterProtocol {
     func onChangeLike(for indexPath: IndexPath)
     
     func getPhotos() -> [PhotoModel]
+    
+    func getLargeImageURL(for indexPath: IndexPath) -> URL?
 }
 
 final class ImagesListPresenter: ImagesListPresenterProtocol {
+    
+    deinit {
+        if let observer = imagesListServiceObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
+    }
     
     // MARK: - Public Properties
     var view: ImagesListViewControllerProtocol?
@@ -81,6 +89,10 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
     
     func getPhotos() -> [PhotoModel] {
         return self.photos
+    }
+    
+    func getLargeImageURL(for indexPath: IndexPath) -> URL? {
+        return URL(string: photos[indexPath.row].largeImageURL)
     }
     
 }
