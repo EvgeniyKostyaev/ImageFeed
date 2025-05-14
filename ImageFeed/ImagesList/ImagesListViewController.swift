@@ -12,6 +12,12 @@ protocol ImagesListViewControllerProtocol {
     var presenter: ImagesListPresenterProtocol? { get set }
     
     func updateTableViewAnimated(insertRows: [IndexPath])
+    
+    func updateLikeForCell(at indexPath: IndexPath, isLiked: Bool)
+    
+    func showProgressHUD()
+    
+    func hideProgressHUD()
 }
 
 final class ImagesListViewController: UIViewController, ImagesListViewControllerProtocol {
@@ -38,7 +44,7 @@ final class ImagesListViewController: UIViewController, ImagesListViewController
         
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
         
-        presenter?.viewDidLoad()
+        presenter?.viewIsReady()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -65,7 +71,19 @@ final class ImagesListViewController: UIViewController, ImagesListViewController
         } completion: { _ in }
     }
     
-    // MARK: - Private Methods
+    func updateLikeForCell(at indexPath: IndexPath, isLiked: Bool) {
+        if let cell = tableView.cellForRow(at: indexPath) as? ImagesListCell {
+            cell.setIsLiked(isLiked)
+        }
+    }
+    
+    func showProgressHUD() {
+        UIBlockingProgressHUD.show()
+    }
+    
+    func hideProgressHUD() {
+        UIBlockingProgressHUD.dismiss()
+    }
 }
 
 // MARK: - UITableViewDataSource methods
@@ -125,6 +143,7 @@ extension ImagesListViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        guard let photos = presenter?.getPhotos() else { return 0 }
         let photo = photos[indexPath.row]
         
         let imageInsets = UIEdgeInsets(top: 4, left: 16, bottom: 4, right: 16)
@@ -136,8 +155,9 @@ extension ImagesListViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if (indexPath.row + 1 == imagesListService.photos.count) {
-            imagesListService.fetchPhotosNextPage()
+        guard let photos = presenter?.getPhotos() else { return }
+        if (indexPath.row + 1 == photos.count) {
+            presenter?.onFetchPhotosNextPage()
         }
     }
 }
@@ -146,22 +166,8 @@ extension ImagesListViewController: UITableViewDelegate {
 extension ImagesListViewController: ImagesListCellDelegate {
     func imageListCellDidTapLike(_ cell: ImagesListCell) {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
-        let photo = photos[indexPath.row]
         
-        UIBlockingProgressHUD.show()
-        imagesListService.changeLike(photoId: photo.id, isLike: !photo.isLiked) { [weak self] result in
-            UIBlockingProgressHUD.dismiss()
-            
-            guard let self else { return }
-            
-            switch result {
-            case .success(let updatedPhoto):
-                self.photos[indexPath.row] = updatedPhoto
-                cell.setIsLiked(updatedPhoto.isLiked)
-            case .failure(let error):
-                print(error)
-            }
-        }
+        presenter?.onChangeLike(for: indexPath)
     }
 }
 

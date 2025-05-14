@@ -10,7 +10,11 @@ import Foundation
 protocol ImagesListPresenterProtocol {
     var view: ImagesListViewControllerProtocol? { get set }
     
-    func viewDidLoad()
+    func viewIsReady()
+    
+    func onFetchPhotosNextPage()
+    
+    func onChangeLike(for indexPath: IndexPath)
     
     func getPhotos() -> [PhotoModel]
 }
@@ -18,7 +22,7 @@ protocol ImagesListPresenterProtocol {
 final class ImagesListPresenter: ImagesListPresenterProtocol {
     
     // MARK: - Public Properties
-    var view: (any ImagesListViewControllerProtocol)?
+    var view: ImagesListViewControllerProtocol?
     
     // MARK: - Private Properties
     private let imagesListService = ImagesListService.shared
@@ -28,8 +32,8 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
     private var photos: [PhotoModel] = []
     
     // MARK: - Public Methods
-    func viewDidLoad() {
-        imagesListService.fetchPhotosNextPage()
+    func viewIsReady() {
+        onFetchPhotosNextPage()
         
         imagesListServiceObserver = NotificationCenter.default
             .addObserver(
@@ -51,6 +55,28 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
                     self.view?.updateTableViewAnimated(insertRows: insertRows)
                 }
             }
+    }
+    
+    func onFetchPhotosNextPage() {
+        imagesListService.fetchPhotosNextPage()
+    }
+    
+    func onChangeLike(for indexPath: IndexPath) {
+        let photo = self.photos[indexPath.row]
+        
+        view?.showProgressHUD()
+        imagesListService.changeLike(photoId: photo.id, isLike: !photo.isLiked) { [weak self] result in
+            guard let self else { return }
+            self.view?.hideProgressHUD()
+            
+            switch result {
+            case .success(let updatedPhoto):
+                self.photos[indexPath.row] = updatedPhoto
+                view?.updateLikeForCell(at: indexPath, isLiked: updatedPhoto.isLiked)
+            case .failure(let error):
+                print(error)
+            }
+        }
     }
     
     func getPhotos() -> [PhotoModel] {
