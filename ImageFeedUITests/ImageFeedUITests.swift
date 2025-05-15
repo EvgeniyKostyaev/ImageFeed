@@ -83,11 +83,12 @@ final class ImageFeedUITests: XCTestCase {
     }
     
     func testProfile() throws {
-        sleep(3)
+        sleep(5)
         
         app.tabBars.buttons.element(boundBy: 1).tap()
         
         sleep(5)
+        
         let nameLabel = app.staticTexts["NameLabel"]
         XCTAssertTrue(nameLabel.waitForExistence(timeout: 5))
         XCTAssertFalse(nameLabel.label.isEmpty)
