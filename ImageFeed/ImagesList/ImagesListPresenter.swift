@@ -23,12 +23,6 @@ protocol ImagesListPresenterProtocol {
 
 final class ImagesListPresenter: ImagesListPresenterProtocol {
     
-    deinit {
-        if let observer = imagesListServiceObserver {
-            NotificationCenter.default.removeObserver(observer)
-        }
-    }
-    
     // MARK: - Public Properties
     var view: ImagesListViewControllerProtocol?
     
@@ -38,6 +32,13 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
     private var imagesListServiceObserver: NSObjectProtocol?
     
     private var photos: [PhotoModel] = []
+    
+    // MARK: - Initializers
+    deinit {
+        if let observer = imagesListServiceObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
+    }
     
     // MARK: - Public Methods
     func viewIsReady() {

@@ -17,12 +17,6 @@ protocol ProfilePresenterProtocol {
 
 final class ProfilePresenter: ProfilePresenterProtocol {
     
-    deinit {
-        if let observer = profileImageServiceObserver {
-            NotificationCenter.default.removeObserver(observer)
-        }
-    }
-    
     // MARK: Public Properties
     var view: ProfileViewControllerProtocol?
     
@@ -32,6 +26,13 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     private let profileService = ProfileService.shared
     
     private let profileLogoutService = ProfileLogoutService.shared
+    
+    // MARK: - Initializers
+    deinit {
+        if let observer = profileImageServiceObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
+    }
     
     // MARK: Public Methods
     func viewIsReady() {

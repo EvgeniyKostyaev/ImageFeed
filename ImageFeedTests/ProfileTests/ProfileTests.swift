@@ -1,5 +1,5 @@
 //
-//  ImagesListTests.swift
+//  ProfileTests.swift
 //  ImageFeedTests
 //
 //  Created by Evgeniy Kostyaev on 14.05.2025.
@@ -8,13 +8,12 @@
 import XCTest
 @testable import ImageFeed
 
-final class ImagesListTests: XCTestCase {
+final class ProfileTests: XCTestCase {
     
     func testViewControllerCallsViewIsReady() {
         // Given
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let viewController = storyboard.instantiateViewController(withIdentifier: "ImagesListViewController") as! ImagesListViewController
-        let presenter = ImagesListPresenterSpy()
+        let viewController = ProfileViewController()
+        let presenter = ProfilePresenterSpy()
         viewController.presenter = presenter
         presenter.view = viewController
         
