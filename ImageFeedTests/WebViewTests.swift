@@ -34,7 +34,7 @@ final class WebViewTests: XCTestCase {
         presenter.view = viewController
         
         //when
-        presenter.viewDidLoad()
+        presenter.viewIsReady()
         
         //then
         XCTAssertTrue(viewController.loadRequestCalled)
@@ -72,7 +72,7 @@ final class WebViewTests: XCTestCase {
         let authHelper = AuthHelper(configuration: configuration)
         
         //when
-        let url = authHelper.authURL()
+        let url = authHelper.getAuthURL()
 
         guard let urlString = url?.absoluteString else {
             XCTFail("Auth URL is nil")
@@ -99,7 +99,7 @@ final class WebViewTests: XCTestCase {
         let url = urlComponents.url!
         
         //when
-        let code = authHelper.code(from: url)
+        let code = authHelper.getCode(from: url)
         
         //then
         XCTAssertEqual(code, "test code")

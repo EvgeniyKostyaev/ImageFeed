@@ -43,14 +43,14 @@ final class WebViewViewController: UIViewController & WebViewViewControllerProto
         webView.navigationDelegate = self
         webView.accessibilityIdentifier = "UnsplashWebView"
         
-        presenter?.viewDidLoad()
+        presenter?.viewIsReady()
         
         estimatedProgressObservation = webView.observe(
             \.estimatedProgress,
              options: [],
              changeHandler: { [weak self] _, _ in
                  guard let self = self else { return }
-                 self.presenter?.didUpdateProgressValue(webView.estimatedProgress)
+                 self.presenter?.onUpdateProgressValue(webView.estimatedProgress)
              })
     }
     
@@ -69,9 +69,9 @@ final class WebViewViewController: UIViewController & WebViewViewControllerProto
     }
     
     // MARK: - Private Methods
-    private func code(from navigationAction: WKNavigationAction) -> String? {
+    private func getCode(from navigationAction: WKNavigationAction) -> String? {
         if let url = navigationAction.request.url {
-            return presenter?.code(from: url)
+            return presenter?.getCode(from: url)
         }
         return nil
     }
@@ -85,7 +85,7 @@ extension WebViewViewController: WKNavigationDelegate {
         decidePolicyFor navigationAction: WKNavigationAction,
         decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
     ) {
-        if let code = code(from: navigationAction) {
+        if let code = getCode(from: navigationAction) {
             delegate?.webViewViewController(self, didAuthenticateWithCode: code)
 
             decisionHandler(.cancel)

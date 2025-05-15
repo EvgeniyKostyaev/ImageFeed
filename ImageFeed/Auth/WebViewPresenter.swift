@@ -14,9 +14,9 @@ enum WebViewConstants {
 protocol WebViewPresenterProtocol: AnyObject {
     var view: WebViewViewControllerProtocol? { get set }
     
-    func viewDidLoad()
-    func didUpdateProgressValue(_ newValue: Double)
-    func code(from url: URL) -> String?
+    func viewIsReady()
+    func onUpdateProgressValue(_ newValue: Double)
+    func getCode(from url: URL) -> String?
 }
 
 final class WebViewPresenter: WebViewPresenterProtocol {
@@ -32,14 +32,14 @@ final class WebViewPresenter: WebViewPresenterProtocol {
     }
     
     // MARK: - Public methods (WebViewPresenterProtocol)
-    func viewDidLoad() {
-        guard let request = authHelper.authRequest() else { return }
+    func viewIsReady() {
+        guard let request = authHelper.getAuthRequest() else { return }
         
         view?.load(request: request)
-        didUpdateProgressValue(0)
+        onUpdateProgressValue(0)
     }
     
-    func didUpdateProgressValue(_ newValue: Double) {
+    func onUpdateProgressValue(_ newValue: Double) {
         let newProgressValue = Float(newValue)
         view?.setProgressValue(newProgressValue)
         
@@ -47,8 +47,8 @@ final class WebViewPresenter: WebViewPresenterProtocol {
         view?.setProgressHidden(shouldHideProgress)
     }
     
-    func code(from url: URL) -> String? {
-        authHelper.code(from: url)
+    func getCode(from url: URL) -> String? {
+        authHelper.getCode(from: url)
     }
     
     func shouldHideProgress(for value: Float) -> Bool {
