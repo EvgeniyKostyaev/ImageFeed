@@ -58,6 +58,7 @@ final class ProfileViewController: UIViewController, ProfileViewControllerProtoc
     
     private let nameLabel: UILabel = {
         let nameLabel = UILabel()
+        nameLabel.accessibilityIdentifier = "NameLabel"
         nameLabel.font = .systemFont(ofSize: ProfileViewControllerTheme.nameLabelFont, weight: .bold)
         nameLabel.textColor = .white
         

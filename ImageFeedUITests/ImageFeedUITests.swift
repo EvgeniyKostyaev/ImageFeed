@@ -83,22 +83,18 @@ final class ImageFeedUITests: XCTestCase {
         
         app.tabBars.buttons.element(boundBy: 1).tap()
         
-        sleep(2)
-        
-        let profileService = ProfileService.shared
-        
-        let profile = profileService.profile!
-        
-        XCTAssertTrue(app.staticTexts[profile.username!].exists)
+        sleep(5)
+        let nameLabel = app.staticTexts["NameLabel"]
+        XCTAssertTrue(nameLabel.waitForExistence(timeout: 5))
+        XCTAssertFalse(nameLabel.label.isEmpty)
         
         app.buttons["LogoutButton"].tap()
         
-        sleep(2)
+        let logoutAlert = app.alerts["Вы действительно хотите выйти?"]
+        XCTAssertTrue(logoutAlert.waitForExistence(timeout: 3))
+        logoutAlert.scrollViews.otherElements.buttons["YesAction"].tap()
         
-        app.alerts["Вы действительно хотите выйти?"].scrollViews.otherElements.buttons["YesAction"].tap()
-        
-        sleep(2)
-        
-        XCTAssertTrue(app.buttons["Authenticate"].exists)
+        let authButton = app.buttons["Authenticate"]
+        XCTAssertTrue(authButton.waitForExistence(timeout: 10))
     }
 }
