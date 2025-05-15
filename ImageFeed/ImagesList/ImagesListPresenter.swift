@@ -32,12 +32,12 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
     // MARK: - Public Properties
     var view: ImagesListViewControllerProtocol?
     
+    var photos: [PhotoModel] = []
+    
     // MARK: - Private Properties
     private let imagesListService = ImagesListService.shared
     
     private var imagesListServiceObserver: NSObjectProtocol?
-    
-    private var photos: [PhotoModel] = []
     
     // MARK: - Public Methods
     func viewIsReady() {

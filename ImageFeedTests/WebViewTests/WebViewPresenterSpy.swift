@@ -9,12 +9,12 @@ import Foundation
 @testable import ImageFeed
 
 final class WebViewPresenterSpy: WebViewPresenterProtocol {
-    var viewDidLoadCalled: Bool = false
+    var viewIsReadyCalled: Bool = false
     
     var view: WebViewViewControllerProtocol?
     
     func viewIsReady() {
-        viewDidLoadCalled = true
+        viewIsReadyCalled = true
     }
     
     func onUpdateProgressValue(_ newValue: Double) {

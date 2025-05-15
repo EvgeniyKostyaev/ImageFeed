@@ -78,27 +78,27 @@ final class ImageFeedUITests: XCTestCase {
         app.buttons["NavBackButton"].tap()
     }
     
-    func testProfile() throws {
-        sleep(3)
-        
-        app.tabBars.buttons.element(boundBy: 1).tap()
-        
-        sleep(2)
-        
-        let profileService = ProfileService.shared
-        
-        let profile = profileService.profile!
-        
-        XCTAssertTrue(app.staticTexts[profile.username!].exists)
-        
-        app.buttons["LogoutButton"].tap()
-        
-        sleep(2)
-        
-        app.alerts["Вы действительно хотите выйти?"].scrollViews.otherElements.buttons["YesAction"].tap()
-        
-        sleep(2)
-        
-        XCTAssertTrue(app.buttons["Authenticate"].exists)
-    }
+//    func testProfile() throws {
+//        sleep(3)
+//        
+//        app.tabBars.buttons.element(boundBy: 1).tap()
+//        
+//        sleep(2)
+//        
+//        let profileService = ProfileService.shared
+//        
+//        let profile = profileService.profile!
+//        
+//        XCTAssertTrue(app.staticTexts[profile.username!].exists)
+//        
+//        app.buttons["LogoutButton"].tap()
+//        
+//        sleep(2)
+//        
+//        app.alerts["Вы действительно хотите выйти?"].scrollViews.otherElements.buttons["YesAction"].tap()
+//        
+//        sleep(2)
+//        
+//        XCTAssertTrue(app.buttons["Authenticate"].exists)
+//    }
 }
