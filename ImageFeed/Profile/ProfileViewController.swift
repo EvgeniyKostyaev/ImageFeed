@@ -32,7 +32,18 @@ enum ProfileViewControllerTheme {
     static let logoutButtonWidth: CGFloat = 44
 }
 
-final class ProfileViewController: UIViewController {
+protocol ProfileViewControllerProtocol {
+    var presenter: ProfilePresenterProtocol? { get set }
+    
+    func updateAvatar(url: URL)
+    
+    func updateProfileDetails(profile: ProfileModel)
+}
+
+final class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
+    
+    // MARK: - Public Properties
+    var presenter: (any ProfilePresenterProtocol)?
     
     // MARK: - Private Properties
     private let userPhotoImageView = {
@@ -47,6 +58,7 @@ final class ProfileViewController: UIViewController {
     
     private let nameLabel: UILabel = {
         let nameLabel = UILabel()
+        nameLabel.accessibilityIdentifier = "NameLabel"
         nameLabel.font = .systemFont(ofSize: ProfileViewControllerTheme.nameLabelFont, weight: .bold)
         nameLabel.textColor = .white
         
@@ -77,36 +89,20 @@ final class ProfileViewController: UIViewController {
         )
         logoutButton.tintColor = ProfileViewControllerTheme.logoutButtonCollor
         
+        logoutButton.accessibilityIdentifier = "LogoutButton"
+        
         return logoutButton
     }()
-    
-    private let profileService = ProfileService.shared
-    private let profileLogoutService = ProfileLogoutService.shared
-    
-    private var profileImageServiceObserver: NSObjectProtocol?
     
     // MARK: - Overrides Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        profileImageServiceObserver = NotificationCenter.default
-            .addObserver(
-                forName: ProfileImageService.didChangeNotification,
-                object: nil,
-                queue: .main
-            ) { [weak self] _ in
-                guard let self = self else { return }
-                self.updateAvatar()
-            }
-        updateAvatar()
+        presenter?.viewIsReady()
         
         setupViews()
         
         setupConstraints()
-        
-        if let profile = profileService.profile {
-            updateProfileDetails(profile: profile)
-        }
     }
     
     // MARK: - IB Actions
@@ -114,18 +110,20 @@ final class ProfileViewController: UIViewController {
         showLogoutUserMessage()
     }
     
-    // MARK: - Private Methods
-    private func updateAvatar() {
-        guard
-            let profileImageURL = ProfileImageService.shared.profileImageURL,
-            let url = URL(string: profileImageURL)
-        else { return }
-        
+    // MARK: - Public Methods
+    func updateAvatar(url: URL){
         userPhotoImageView.kf.indicatorType = .activity
         
         userPhotoImageView.kf.setImage(with: url)
     }
     
+    func updateProfileDetails(profile: ProfileModel) {
+        nameLabel.text = profile.name
+        nicknameLabel.text = profile.loginName
+        statusLabel.text = profile.bio
+    }
+    
+    // MARK: - Private Methods
     private func setupViews() {
         [userPhotoImageView,
          nameLabel,
@@ -163,12 +161,6 @@ final class ProfileViewController: UIViewController {
         ])
     }
     
-    private func updateProfileDetails(profile: ProfileModel) {
-        nameLabel.text = profile.name
-        nicknameLabel.text = profile.loginName
-        statusLabel.text = profile.bio
-    }
-    
     private func showLogoutUserMessage() {
         let alert = UIAlertController(
             title: "Вы действительно хотите выйти?",
@@ -182,9 +174,11 @@ final class ProfileViewController: UIViewController {
             handler: { [ weak self ] _ in
                 guard let self else { return }
                 
-                self.profileLogoutService.logout()
+                self.presenter?.onLogout()
             }
         )
+        
+        yesAction.accessibilityIdentifier = "YesAction"
         
         let noAction = UIAlertAction(
             title: "Нет",
